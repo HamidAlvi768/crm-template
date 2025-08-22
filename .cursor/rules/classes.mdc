@@ -1,0 +1,7 @@
+---
+description: Apply to UI Development & Styling Tasks
+alwaysApply: false
+---
+
+When writing code, always add **custom CSS classes** (in kebab-case, placed before Tailwind classes) to every element for easy styling, clarity, and reusability.  
+This ensures semantic naming, better maintainability, design flexibility, and consistent component styling.

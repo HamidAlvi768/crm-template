@@ -1,0 +1,10 @@
+---
+description: Key Principles for Achieving Highly Responsive and Adaptable Web Design
+globs:
+alwaysApply: false
+---
+
+- Always keep responsiveness in mind throughout the development process
+- Adopt a Mobile-First Strategy to ensure optimal experience on all devices
+- Use Fluid Sizing instead of fixed values to allow layouts to adapt seamlessly
+- Ensure Fluid Media, and use functions like clamp() for fluid typography to minimize reliance on media queries

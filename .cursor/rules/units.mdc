@@ -1,0 +1,11 @@
+---
+description: Selecting the Most Appropriate CSS Units
+alwaysApply: false
+---
+
+- Font Size: Use rem, setting html { font-size: 62.5%; }.
+- Width: For paragraphs or text containers, use ch; for the main parent container visible on the user's screen, use vw (use max-width); for other widths use % (also use % for relative sizing and position: relative; )
+- Height: Prefer min-height; if a specific height is necessary, use rem.
+- Padding or Margin: Use em or rem; use em for button padding since it scales with font size, and rem for margin.
+- Media Queries: Use em.
+- Color: hsla
