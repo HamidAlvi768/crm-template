@@ -74,7 +74,7 @@ function PageLayout({
       )}
 
       {/* Page Content */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-2">
         {children}
       </div>
     </div>

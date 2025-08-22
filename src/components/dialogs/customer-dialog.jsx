@@ -39,7 +39,7 @@ function CustomerDialog({ onCustomerAdded, trigger = null }) {
     </Button>
   )
 
-  return (
+return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || defaultTrigger}
