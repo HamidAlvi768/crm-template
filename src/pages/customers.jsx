@@ -1,21 +1,18 @@
 import React from 'react'
+import { toast } from 'sonner'
 import { AppLayout, PageLayout } from '@/components/layout'
 import { CustomerDialog } from '@/components/dialogs/customer-dialog'
 import { UsersIcon } from 'lucide-react'
 
 function CustomersPage() {
-  // Breadcrumbs
-  const breadcrumbs = [
-    { label: 'Dashboard', href: '/' },
-    { label: 'Customers' }
-  ]
-
   // Page actions - only Add Customer button
   const pageActions = (
     <CustomerDialog 
       onCustomerAdded={(newCustomer) => {
-        console.log('New customer added:', newCustomer)
-        alert(`Customer ${newCustomer.firstName} ${newCustomer.lastName} added successfully!`)
+        // Show success toast
+        toast.success('Customer added successfully!', {
+          description: `${newCustomer.firstName} ${newCustomer.lastName} has been added to your customer database.`,
+        })
       }}
       trigger={
         <button className="customers-page-add-btn bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors flex items-center gap-2">
@@ -30,7 +27,6 @@ function CustomersPage() {
     <AppLayout>
       <PageLayout
         title="Customers"
-        breadcrumbs={breadcrumbs}
         actions={pageActions}
       >
         {/* Simple welcome message */}

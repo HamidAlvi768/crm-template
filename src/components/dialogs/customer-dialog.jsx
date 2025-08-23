@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { toast } from 'sonner'
 import { 
   Dialog,
   DialogContent,
@@ -7,7 +8,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { CustomerForm } from '@/components/forms/customer-form'
+import { DynamicForm } from '@/components/forms/dynamic-form'
+import { customerFormConfig } from '@/lib/form-configs'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
 
@@ -54,9 +56,11 @@ return (
           </DialogDescription>
         </DialogHeader>
         
-        <CustomerForm 
+        <DynamicForm 
+          config={customerFormConfig}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
+          submitLabel="Add Customer"
         />
       </DialogContent>
     </Dialog>

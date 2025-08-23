@@ -7,7 +7,6 @@ function PageLayout({
   title,
   description,
   actions,
-  breadcrumbs,
   ...props 
 }) {
   return (
@@ -19,34 +18,9 @@ function PageLayout({
       {...props}
     >
       {/* Page Header */}
-      {(title || description || actions || breadcrumbs) && (
+      {(title || description || actions) && (
         <div className="border-b border-border bg-background">
           <div className="px-6 py-6">
-            {/* Breadcrumbs */}
-            {breadcrumbs && (
-              <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-4">
-                {breadcrumbs.map((crumb, index) => (
-                  <React.Fragment key={crumb.href || index}>
-                    {index > 0 && (
-                      <span className="text-muted-foreground/50">/</span>
-                    )}
-                    {crumb.href ? (
-                      <a 
-                        href={crumb.href}
-                        className="hover:text-foreground transition-colors"
-                      >
-                        {crumb.label}
-                      </a>
-                    ) : (
-                      <span className="text-foreground font-medium">
-                        {crumb.label}
-                      </span>
-                    )}
-                  </React.Fragment>
-                ))}
-              </nav>
-            )}
-
             {/* Title and Description */}
             <div className="flex items-start justify-between">
               <div className="flex-1">

@@ -1,32 +1,47 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout, PageLayout } from './components/layout'
 import { Button } from './components/ui/button'
 import { 
   UsersIcon, 
   BuildingIcon, 
   FileTextIcon, 
-  TrendingUpIcon
+  TrendingUpIcon,
+  BellIcon
 } from 'lucide-react'
+import CustomersPage from './pages/customers'
+import FormsDemoPage from './pages/forms-demo'
+import { Toaster } from 'sonner'
+import { toast } from 'sonner'
 
-function App() {
-  const [showCustomersDemo, setShowCustomersDemo] = useState(false)
+// Dashboard Component
+function DashboardPage() {
+  const showToastDemo = () => {
+    toast('Event has been created', {
+      description: 'Sunday, December 03, 2023 at 9:00 AM',
+      action: {
+        label: 'Undo',
+        onClick: () => console.log('Undo clicked'),
+      },
+    })
+  }
 
-  // If showing customers demo, render the customers page
-  if (showCustomersDemo) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="border-b border-border bg-background p-4">
-          <Button 
-            variant="ghost" 
-            onClick={() => setShowCustomersDemo(false)}
-            className="mb-4"
-          >
-            ← Back to Dashboard
-          </Button>
-        </div>
-        <CustomersPage />
-      </div>
-    )
+  const showSuccessToast = () => {
+    toast.success('Success!', {
+      description: 'Your action was completed successfully.',
+    })
+  }
+
+  const showErrorToast = () => {
+    toast.error('Error occurred', {
+      description: 'Something went wrong. Please try again.',
+    })
+  }
+
+  const showInfoToast = () => {
+    toast.info('Information', {
+      description: 'Here is some important information for you.',
+    })
   }
 
   return (
@@ -34,6 +49,31 @@ function App() {
       <PageLayout title="Dashboard">
         {/* Dashboard Content */}
         <div className="space-y-6">
+          {/* Toast Demo Section */}
+          <div className="p-6 bg-card border border-border rounded-lg">
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <BellIcon className="size-5" />
+              Toast Notifications Demo
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Click the buttons below to see different types of toast notifications in action.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={showToastDemo}>
+                Show Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={showSuccessToast}>
+                Success Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={showErrorToast}>
+                Error Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={showInfoToast}>
+                Info Toast
+              </Button>
+            </div>
+          </div>
+
           {/* Stats Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <div className="p-6 bg-card border border-border rounded-lg">
@@ -94,7 +134,18 @@ function App() {
   )
 }
 
-// Import CustomersPage component
-import CustomersPage from './pages/customers'
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/customers" element={<CustomersPage />} />
+        <Route path="/forms-demo" element={<FormsDemoPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      <Toaster />
+    </Router>
+  )
+}
 
 export default App

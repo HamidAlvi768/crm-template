@@ -1,27 +1,25 @@
 import React from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { 
   HomeIcon,
-  UsersIcon
+  UsersIcon,
+  FileTextIcon
 } from 'lucide-react'
 
 const navigationItems = [
-  { icon: HomeIcon, label: 'Dashboard', href: '/', active: false },
-  { icon: UsersIcon, label: 'Customers', href: '/customers', active: true },
+  { icon: HomeIcon, label: 'Dashboard', href: '/' },
+  { icon: UsersIcon, label: 'Customers', href: '/customers' },
+  { icon: FileTextIcon, label: 'Forms Demo', href: '/forms-demo' },
 ]
 
 function Header({ className, ...props }) {
-  // Simple navigation function (you can replace this with React Router later)
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const handleNavigation = (href) => {
-    if (href === '/') {
-      window.location.href = '/'
-    } else if (href === '/customers') {
-      // For now, we'll just show an alert. In a real app, you'd use React Router
-      alert('Navigate to Customers page - This would use React Router in a real application')
-    } else {
-      alert(`Navigate to ${href} - This would use React Router in a real application`)
-    }
+    navigate(href)
   }
 
   return (
@@ -49,14 +47,15 @@ function Header({ className, ...props }) {
           <div className="flex items-center space-x-1">
             {navigationItems.map((item) => {
               const Icon = item.icon
+              const isActive = location.pathname === item.href
               return (
                 <Button
                   key={item.label}
-                  variant={item.active ? "secondary" : "ghost"}
+                  variant={isActive ? "secondary" : "ghost"}
                   size="sm"
                   className={cn(
                     "gap-2",
-                    item.active && "bg-secondary text-secondary-foreground"
+                    isActive && "bg-secondary text-secondary-foreground"
                   )}
                   onClick={() => handleNavigation(item.href)}
                 >
