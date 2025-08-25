@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { toast } from 'sonner'
-import { AppLayout, PageLayout } from '@/components/layout'
+import { AppLayout, PageLayout } from '@/shared/layout'
 import { DataTable } from '@/components/ui'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
