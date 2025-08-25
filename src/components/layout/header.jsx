@@ -4,14 +4,12 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { 
   HomeIcon,
-  UsersIcon,
-  FileTextIcon
+  UsersIcon
 } from 'lucide-react'
 
 const navigationItems = [
   { icon: HomeIcon, label: 'Dashboard', href: '/' },
   { icon: UsersIcon, label: 'Customers', href: '/customers' },
-  { icon: FileTextIcon, label: 'Forms Demo', href: '/forms-demo' },
 ]
 
 function Header({ className, ...props }) {
@@ -25,7 +23,7 @@ function Header({ className, ...props }) {
   return (
     <header 
       className={cn(
-        "border-b border-border bg-background",
+        "border-b border-border bg-header",
         className
       )}
       {...props}
@@ -37,7 +35,7 @@ function Header({ className, ...props }) {
           <div className="flex items-center">
             <button 
               onClick={() => handleNavigation('/')}
-              className="text-xl font-bold text-primary hover:text-primary/80 transition-colors cursor-pointer mr-8"
+              className="text-xl font-bold text-white hover:text-white/80 transition-colors cursor-pointer mr-8"
             >
               CRM System
             </button>
@@ -54,8 +52,8 @@ function Header({ className, ...props }) {
                   variant={isActive ? "secondary" : "ghost"}
                   size="sm"
                   className={cn(
-                    "gap-2",
-                    isActive && "bg-secondary text-secondary-foreground"
+                    "gap-2 text-white hover:text-white/90 hover:bg-white/20",
+                    isActive && "bg-white/20 text-white"
                   )}
                   onClick={() => handleNavigation(item.href)}
                 >

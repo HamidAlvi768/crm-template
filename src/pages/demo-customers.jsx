@@ -1,5 +1,5 @@
 import React from 'react'
-import CustomersPage from './customers'
+import CustomersPage from './customer/list'
 
 function DemoCustomersPage() {
   return <CustomersPage />

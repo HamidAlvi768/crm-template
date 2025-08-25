@@ -12,17 +12,17 @@ function PageLayout({
   return (
     <div 
       className={cn(
-        "flex-1 overflow-auto",
+        "flex-1 overflow-auto px-2",
         className
       )}
       {...props}
     >
       {/* Page Header */}
       {(title || description || actions) && (
-        <div className="border-b border-border bg-background">
-          <div className="px-6 py-3">
+        <div className="border-border bg-background">
+          <div className="px-6 py-4">
             {/* Title and Description */}
-            <div className="flex items-start justify-between">
+            <div className="flex items-center justify-between">
               <div className="flex-1">
                 {title && (
                   <h1 className="text-2xl font-bold tracking-tight text-foreground">
@@ -48,7 +48,7 @@ function PageLayout({
       )}
 
       {/* Page Content */}
-      <div className="flex-1 p-2">
+      <div className="flex-1 p-2 bg-page">
         {children}
       </div>
     </div>

@@ -3,11 +3,10 @@ import * as z from 'zod';
 // Customer Form Configuration
 export const customerFormConfig = {
   // Form-level classes
-  className: "max-w-4xl mx-auto",
+  className: "",
   formClassName: "bg-background",
   actionsClassName: "pt-6 border-t border-border",
   submitButtonClassName: "bg-primary hover:bg-primary/90",
-  resetButtonClassName: "hover:bg-muted",
   cancelButtonClassName: "hover:bg-muted",
   
   sections: [
@@ -21,7 +20,7 @@ export const customerFormConfig = {
           label: 'First Name', 
           type: 'text', 
           validation: z.string().min(2, 'First name must be at least 2 characters'),
-          itemClassName: "md:col-span-1",
+          itemClassName: "bs-col-12 bs-col-md-6",
           labelClassName: "font-medium text-foreground",
           controlClassName: "mt-1"
         },
@@ -30,7 +29,7 @@ export const customerFormConfig = {
           label: 'Last Name', 
           type: 'text', 
           validation: z.string().min(2, 'Last name must be at least 2 characters'),
-          itemClassName: "md:col-span-1",
+          itemClassName: "bs-col-12 bs-col-md-6",
           labelClassName: "font-medium text-foreground",
           controlClassName: "mt-1"
         },
@@ -39,7 +38,7 @@ export const customerFormConfig = {
           label: 'Email', 
           type: 'email', 
           validation: z.string().email('Please enter a valid email address'),
-          itemClassName: "md:col-span-2",
+          itemClassName: "bs-col-12 bs-col-md-6",
           labelClassName: "font-medium text-foreground",
           controlClassName: "mt-1"
         },
@@ -48,27 +47,35 @@ export const customerFormConfig = {
           label: 'Phone', 
           type: 'phone', 
           validation: z.string().min(10, 'Phone number must be at least 10 characters'),
-          itemClassName: "md:col-span-2",
+          itemClassName: "bs-col-12 bs-col-md-6",
           labelClassName: "font-medium text-foreground",
           controlClassName: "mt-1"
         },
       ],
-      // Add grid layout for this section
-      fieldsContainerClassName: "grid grid-cols-1 md:grid-cols-2 gap-4",
+      // Use Bootstrap grid layout
+      fieldsContainerClassName: "bs-row",
     },
     {
       title: 'Company Information',
+      className: "bg-card p-6 rounded-lg border border-border",
+      titleClassName: "text-primary border-primary/20",
       fields: [
         { 
           name: 'company', 
           label: 'Company Name', 
           type: 'text', 
-          validation: z.string().min(2, 'Company name must be at least 2 characters') 
+          validation: z.string().min(2, 'Company name must be at least 2 characters'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
         },
         { 
           name: 'jobTitle', 
           label: 'Job Title', 
-          type: 'text' 
+          type: 'text',
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
         },
         { 
           name: 'status', 
@@ -81,35 +88,31 @@ export const customerFormConfig = {
           ],
           validation: z.enum(['active', 'inactive', 'prospect'], {
             required_error: 'Please select a status',
-          })
+          }),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
         },
         { 
           name: 'industry', 
           label: 'Industry', 
-          type: 'text' 
+          type: 'text',
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
         },
         { 
           name: 'website', 
           label: 'Website', 
-          type: 'url' 
+          type: 'url',
+          itemClassName: "bs-col-12",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
         },
       ],
+      fieldsContainerClassName: "bs-row",
     },
-    {
-      title: 'Additional Information',
-      fields: [
-        { 
-          name: 'notes', 
-          label: 'Notes', 
-          type: 'textarea' 
-        },
-        { 
-          name: 'isVIP', 
-          label: 'VIP Customer', 
-          type: 'checkbox' 
-        },
-      ],
-    },
+
   ],
 };
 

@@ -1,1 +1,1 @@
-export { CustomerDialog } from './customer-dialog'
+export { FormDialog } from './form-dialog'
