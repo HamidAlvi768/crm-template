@@ -2,35 +2,59 @@ import * as z from 'zod';
 
 // Customer Form Configuration
 export const customerFormConfig = {
+  // Form-level classes
+  className: "max-w-4xl mx-auto",
+  formClassName: "bg-background",
+  actionsClassName: "pt-6 border-t border-border",
+  submitButtonClassName: "bg-primary hover:bg-primary/90",
+  resetButtonClassName: "hover:bg-muted",
+  cancelButtonClassName: "hover:bg-muted",
+  
   sections: [
     {
       title: 'Personal Information',
+      className: "bg-card p-6 rounded-lg border border-border",
+      titleClassName: "text-primary border-primary/20",
       fields: [
         { 
           name: 'firstName', 
           label: 'First Name', 
           type: 'text', 
-          validation: z.string().min(2, 'First name must be at least 2 characters') 
+          validation: z.string().min(2, 'First name must be at least 2 characters'),
+          itemClassName: "md:col-span-1",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
         },
         { 
           name: 'lastName', 
           label: 'Last Name', 
           type: 'text', 
-          validation: z.string().min(2, 'Last name must be at least 2 characters') 
+          validation: z.string().min(2, 'Last name must be at least 2 characters'),
+          itemClassName: "md:col-span-1",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
         },
         { 
           name: 'email', 
           label: 'Email', 
           type: 'email', 
-          validation: z.string().email('Please enter a valid email address') 
+          validation: z.string().email('Please enter a valid email address'),
+          itemClassName: "md:col-span-2",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
         },
         { 
           name: 'phone', 
           label: 'Phone', 
           type: 'phone', 
-          validation: z.string().min(10, 'Phone number must be at least 10 characters') 
+          validation: z.string().min(10, 'Phone number must be at least 10 characters'),
+          itemClassName: "md:col-span-2",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
         },
       ],
+      // Add grid layout for this section
+      fieldsContainerClassName: "grid grid-cols-1 md:grid-cols-2 gap-4",
     },
     {
       title: 'Company Information',

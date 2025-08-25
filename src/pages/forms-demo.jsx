@@ -101,7 +101,7 @@ function FormsDemoPage() {
             <CardHeader>
               <CardTitle>Entity Forms</CardTitle>
               <CardDescription>
-                Select an entity type to see its dynamic form in action
+                Select an entity type to see its dynamic form in action. The Customer form demonstrates custom styling with CSS classes.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -122,6 +122,11 @@ function FormsDemoPage() {
                         <div>
                           <h3 className="text-lg font-semibold">{entity.label} Form</h3>
                           <p className="text-sm text-muted-foreground">{entity.description}</p>
+                          {entity.key === 'customer' && (
+                            <p className="text-xs text-blue-600 mt-1">
+                              ✨ This form demonstrates custom CSS classes for styling
+                            </p>
+                          )}
                         </div>
                         <Button
                           variant="outline"

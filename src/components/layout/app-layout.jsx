@@ -1,7 +1,6 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
 import { Header } from './header'
-import { PageLayout } from './page-layout'
 
 function AppLayout({ 
   children, 
@@ -24,10 +23,7 @@ function AppLayout({
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Page Content */}
-        <PageLayout>
-          {children}
-        </PageLayout>
+        {children}
       </div>
     </div>
   )

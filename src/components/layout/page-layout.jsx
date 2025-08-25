@@ -20,12 +20,12 @@ function PageLayout({
       {/* Page Header */}
       {(title || description || actions) && (
         <div className="border-b border-border bg-background">
-          <div className="px-6 py-6">
+          <div className="px-6 py-3">
             {/* Title and Description */}
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 {title && (
-                  <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                  <h1 className="text-2xl font-bold tracking-tight text-foreground">
                     {title}
                   </h1>
                 )}
