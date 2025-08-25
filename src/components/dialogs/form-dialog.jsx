@@ -81,7 +81,7 @@ function FormDialog({
         {trigger || defaultTrigger}
       </DialogTrigger>
       <DialogContent className={`form-dialog-content ${sizeClasses[size]} max-h-[90vh] flex flex-col`} {...props}>
-        <DialogHeader className="form-dialog-header flex-shrink-0 p-6">
+        <DialogHeader className="form-dialog-header flex-shrink-0 p-0">
           <DialogTitle className="form-dialog-title text-2xl font-bold">
             {title || (isEditMode ? 'Edit Item' : 'Add New Item')}
           </DialogTitle>
@@ -105,7 +105,7 @@ function FormDialog({
         </div>
         
         {showActions && (
-          <DialogFooter className="flex-shrink-0 px-6 py-4 border-t bg-muted/30">
+          <DialogFooter className="flex-shrink-0 px-0 pt-3 border-t bg-muted/30">
             <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end w-full">
               <Button 
                 type="button" 

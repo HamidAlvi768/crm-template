@@ -277,7 +277,7 @@ function DynamicForm({
     defaultValues: initialData
       ? { ...defaultValues, ...initialData }
       : defaultValues,
-    mode: "onChange",
+    mode: "onSubmit",
   });
 
   const handleSubmit = (values) => {

@@ -45,14 +45,55 @@ export const customerFormConfig = {
         { 
           name: 'phone', 
           label: 'Phone', 
-          type: 'phone', 
+          type: 'tel', 
           validation: z.string().min(10, 'Phone number must be at least 10 characters'),
           itemClassName: "bs-col-12 bs-col-md-6",
           labelClassName: "font-medium text-foreground",
           controlClassName: "mt-1"
         },
       ],
-      // Use Bootstrap grid layout
+      fieldsContainerClassName: "bs-row",
+    },
+    {
+      title: 'Account & Preferences',
+      className: "bg-card p-6 rounded-lg border border-border",
+      titleClassName: "text-primary border-primary/20",
+      fields: [
+        { 
+          name: 'password', 
+          label: 'Password', 
+          type: 'password',
+          validation: z.string().min(8, 'Password must be at least 8 characters'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'age', 
+          label: 'Age', 
+          type: 'number',
+          validation: z.number().min(18, 'Must be at least 18 years old').max(120, 'Invalid age'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'birthDate', 
+          label: 'Birth Date', 
+          type: 'date',
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'favoriteColor', 
+          label: 'Favorite Color', 
+          type: 'color',
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+      ],
       fieldsContainerClassName: "bs-row",
     },
     {
@@ -78,22 +119,6 @@ export const customerFormConfig = {
           controlClassName: "mt-1"
         },
         { 
-          name: 'status', 
-          label: 'Status', 
-          type: 'select',
-          options: [
-            { value: 'prospect', label: 'Prospect' },
-            { value: 'active', label: 'Active' },
-            { value: 'inactive', label: 'Inactive' },
-          ],
-          validation: z.enum(['active', 'inactive', 'prospect'], {
-            required_error: 'Please select a status',
-          }),
-          itemClassName: "bs-col-12 bs-col-md-6",
-          labelClassName: "font-medium text-foreground",
-          controlClassName: "mt-1"
-        },
-        { 
           name: 'industry', 
           label: 'Industry', 
           type: 'text',
@@ -105,15 +130,95 @@ export const customerFormConfig = {
           name: 'website', 
           label: 'Website', 
           type: 'url',
-          itemClassName: "bs-col-12",
+          itemClassName: "bs-col-12 bs-col-md-6",
           labelClassName: "font-medium text-foreground",
           controlClassName: "mt-1"
         },
       ],
       fieldsContainerClassName: "bs-row",
     },
-
-  ],
+    {
+      title: 'Preferences & Settings',
+      className: "bg-card p-6 rounded-lg border border-border",
+      titleClassName: "text-primary border-primary/20",
+      fields: [
+        { 
+          name: 'status', 
+          label: 'Status', 
+          type: 'select',
+          options: [
+            { value: 'prospect', label: 'Prospect' },
+            { value: 'active', label: 'Active' },
+            { value: 'inactive', label: 'Inactive' },
+          ],
+          validation: z.string().min(1, 'Please select a status'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'priority', 
+          label: 'Priority Level', 
+          type: 'radio',
+          options: [
+            { value: 'low', label: 'Low' },
+            { value: 'medium', label: 'Medium' },
+            { value: 'high', label: 'High' },
+          ],
+          validation: z.string().min(1, 'Please select a priority level'),
+          itemClassName: "bs-col-2 bs-col-md-2",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'satisfaction', 
+          label: 'Satisfaction Level', 
+          type: 'range',
+          min: 1,
+          max: 10,
+          step: 1,
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'profilePicture', 
+          label: 'Profile Picture', 
+          type: 'file',
+          accept: "image/*",
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+      ],
+      fieldsContainerClassName: "bs-row",
+    },
+    {
+      title: 'Additional Options',
+      className: "bg-card p-6 rounded-lg border border-border",
+      titleClassName: "text-primary border-primary/20",
+      fields: [
+        { 
+          name: 'newsletter', 
+          label: 'Subscribe to Newsletter', 
+          type: 'checkbox',
+          itemClassName: "bs-col-12",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'termsAccepted', 
+          label: 'I accept the terms and conditions', 
+          type: 'checkbox',
+          validation: z.boolean().refine(val => val === true, 'You must accept the terms and conditions'),
+          itemClassName: "bs-col-12",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+      ],
+      fieldsContainerClassName: "bs-row",
+    }
+  ]
 };
 
 // Company Form Configuration

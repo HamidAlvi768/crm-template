@@ -17,11 +17,20 @@ function CustomersPage() {
       lastName: 'Smith',
       email: 'john.smith@acme.com',
       phone: '+1-555-0123',
+      password: '********',
+      age: 32,
+      birthDate: '1992-05-15',
+      favoriteColor: '#3B82F6',
       company: 'Acme Corporation',
       jobTitle: 'Senior Developer',
       status: 'active',
       industry: 'Technology',
-      website: 'https://acme.com'
+      website: 'https://acme.com',
+      priority: 'high',
+      satisfaction: 9,
+      profilePicture: null,
+      newsletter: true,
+      termsAccepted: true
     },
     {
       id: 2,
@@ -29,11 +38,20 @@ function CustomersPage() {
       lastName: 'Doe',
       email: 'jane.doe@techsolutions.com',
       phone: '+1-555-0124',
+      password: '********',
+      age: 28,
+      birthDate: '1996-08-22',
+      favoriteColor: '#10B981',
       company: 'Tech Solutions Inc',
       jobTitle: 'Product Manager',
       status: 'prospect',
       industry: 'Software',
-      website: 'https://techsolutions.com'
+      website: 'https://techsolutions.com',
+      priority: 'medium',
+      satisfaction: 7,
+      profilePicture: null,
+      newsletter: false,
+      termsAccepted: true
     },
     {
       id: 3,
@@ -41,11 +59,20 @@ function CustomersPage() {
       lastName: 'Wilson',
       email: 'bob.wilson@globalindustries.com',
       phone: '+1-555-0125',
+      password: '********',
+      age: 45,
+      birthDate: '1979-12-03',
+      favoriteColor: '#F59E0B',
       company: 'Global Industries',
       jobTitle: 'Sales Director',
       status: 'inactive',
       industry: 'Manufacturing',
-      website: 'https://globalindustries.com'
+      website: 'https://globalindustries.com',
+      priority: 'low',
+      satisfaction: 4,
+      profilePicture: null,
+      newsletter: true,
+      termsAccepted: false
     },
     {
       id: 4,
@@ -53,11 +80,20 @@ function CustomersPage() {
       lastName: 'Brown',
       email: 'alice.brown@innovatecorp.com',
       phone: '+1-555-0126',
+      password: '********',
+      age: 35,
+      birthDate: '1989-03-18',
+      favoriteColor: '#8B5CF6',
       company: 'Innovate Corp',
       jobTitle: 'Marketing Manager',
       status: 'active',
       industry: 'Marketing',
-      website: 'https://innovatecorp.com'
+      website: 'https://innovatecorp.com',
+      priority: 'high',
+      satisfaction: 8,
+      profilePicture: null,
+      newsletter: true,
+      termsAccepted: true
     }
   ])
 
@@ -188,9 +224,23 @@ function CustomersPage() {
   const handleCustomerAdded = (newCustomer) => {
     // Generate a new ID for the customer
     const newId = Math.max(...customers.map(c => c.id)) + 1
-    const customerWithId = { ...newCustomer, id: newId }
     
-    setCustomers([...customers, customerWithId])
+    // Add default values for new fields if they're not provided
+    const customerWithDefaults = {
+      password: '********',
+      age: 25,
+      birthDate: new Date().toISOString().split('T')[0],
+      favoriteColor: '#6B7280',
+      priority: 'medium',
+      satisfaction: 5,
+      profilePicture: null,
+      newsletter: false,
+      termsAccepted: false,
+      ...newCustomer,
+      id: newId
+    }
+    
+    setCustomers([...customers, customerWithDefaults])
     
     toast.success('Customer added successfully!', {
       description: `${newCustomer.firstName} ${newCustomer.lastName} has been added to your customer database.`,
