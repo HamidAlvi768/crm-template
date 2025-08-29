@@ -270,6 +270,9 @@ function CustomersPage() {
                 striped={true}
                 hover={true}
                 emptyMessage="No customers found. Add your first customer to get started!"
+                filterableColumns={['name', 'contact', 'company', 'industry']}
+                itemsPerPage={5}
+                showPagination={true}
               />
             </div>
           </div>

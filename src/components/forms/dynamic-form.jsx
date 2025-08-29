@@ -40,6 +40,8 @@ const renderInput = (field, fieldConfig) => {
       );
     case "email":
       return <Input type="email" placeholder={`Enter ${fieldConfig.label.toLowerCase()}`} {...field} />;
+    case "password":
+      return <Input type="password" placeholder={`Enter ${fieldConfig.label.toLowerCase()}`} {...field} />;
     case "phone":
       return <Input type="tel" placeholder={`Enter ${fieldConfig.label.toLowerCase()}`} {...field} />;
     case "url":
@@ -80,7 +82,12 @@ const renderInput = (field, fieldConfig) => {
         </div>
       );
     case "checkbox":
-      return <Checkbox checked={field.value} onCheckedChange={field.onChange} />;
+      return (
+        <div className="flex items-center space-x-2">
+          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+          <span className="text-sm text-muted-foreground">{fieldConfig.label}</span>
+        </div>
+      );
     case "switch":
       return <Checkbox checked={field.value} onCheckedChange={field.onChange} />;
     case "color":
@@ -269,7 +276,7 @@ function DynamicForm({
   submitLabel = "Submit",
   showActions = true,
 }) {
-  const schema = buildZodSchema(config.sections);
+  const schema = buildZodSchema(config.sections??config);
   const defaultValues = computeDefaultValues(config.sections);
 
   const form = useForm({
@@ -296,170 +303,192 @@ function DynamicForm({
           onSubmit={form.handleSubmit(handleSubmit)}
           className={cn("space-y-8", config.formClassName)}
         >
-          {config.sections.map((section) => (
-            <div
-              key={section.title}
-              className={cn("space-y-4", section.className)}
-            >
-              <h3
-                className={cn(
-                  "text-lg font-semibold border-b pb-2 text-foreground",
-                  section.titleClassName
-                )}
-              >
-                {section.title}
-              </h3>
+          {/* Main Form Card Container */}
+          <div className="bg-card rounded-lg border border-border p-6">
+            {/* Form Sections */}
+            {config.sections.map((section) => (
               <div
-                className={cn("space-y-4", section.fieldsContainerClassName)}
+                key={section.title}
+                className={cn("space-y-4", section.className)}
               >
-              {section.fields.map((field) => {
-                  if (field.type === "array") {
-                    const {
-                      fields: arrayFields,
-                      append,
-                      remove,
-                    } = useFieldArray({
-                    control: form.control,
-                    name: field.name,
-                  });
+                <h3
+                  className={cn(
+                    "text-lg font-semibold border-b pb-2 text-foreground",
+                    section.titleClassName
+                  )}
+                >
+                  {section.title}
+                </h3>
+                <div
+                  className={cn("space-y-4", section.fieldsContainerClassName)}
+                >
+                {section.fields.map((field) => {
+                    if (field.type === "array") {
+                      const {
+                        fields: arrayFields,
+                        append,
+                        remove,
+                      } = useFieldArray({
+                      control: form.control,
+                      name: field.name,
+                    });
 
-                  const emptyItem = {};
-                    field.itemFields.forEach((subField) => {
-                      emptyItem[subField.name] = computeDefaultValues([
-                        { fields: [subField] },
-                      ])[subField.name];
-                  });
+                    const emptyItem = {};
+                      field.itemFields.forEach((subField) => {
+                        emptyItem[subField.name] = computeDefaultValues([
+                          { fields: [subField] },
+                        ])[subField.name];
+                    });
 
-                  return (
-                      <div
-                        key={field.name}
-                        className={cn("space-y-4", field.className)}
-                      >
-                        <h4
-                          className={cn(
-                            "font-medium text-foreground",
-                            field.labelClassName
-                          )}
+                    return (
+                        <div
+                          key={field.name}
+                          className={cn("space-y-4", field.className)}
                         >
-                          {field.label}
-                        </h4>
-                      {arrayFields.map((item, index) => (
-                          <div
-                            key={item.id}
+                          <h4
                             className={cn(
-                              "border border-border rounded-lg p-4 bg-muted/30",
-                              field.itemClassName
+                              "font-medium text-foreground",
+                              field.labelClassName
                             )}
                           >
+                            {field.label}
+                          </h4>
+                        {arrayFields.map((item, index) => (
                             <div
+                              key={item.id}
                               className={cn(
-                                "flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0",
-                                field.itemContainerClassName
+                                "border border-border rounded-lg p-4 bg-muted/30",
+                                field.itemClassName
                               )}
                             >
-                              {field.itemFields.map((subField) => (
-                              <FormField
-                                key={subField.name}
-                                control={form.control}
-                                name={`${field.name}.${index}.${subField.name}`}
-                                render={({ field: formField }) => (
-                                    <FormItem
-                                      className={cn(
-                                        "flex-1",
-                                        subField.itemClassName
-                                      )}>
-                                      <FormLabel className={subField.labelClassName}>
-                                        {subField.label}
-                                      </FormLabel>
-                                      <FormControl className={subField.controlClassName}>
-                                        {renderInput(formField, subField)}
-                                      </FormControl>
-                                      <FormMessage className={subField.messageClassName} />
-                                  </FormItem>
-                                )}
-                              />
-                            ))}
                               <div
                                 className={cn(
-                                  "flex items-end",
-                                  field.removeButtonContainerClassName
+                                  "flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0",
+                                  field.itemContainerClassName
                                 )}
                               >
-                              <Button 
-                                type="button" 
-                                variant="destructive" 
-                                size="sm"
-                                  className={field.removeButtonClassName}
-                                onClick={() => remove(index)}
-                              >
-                                Remove
-                              </Button>
+                                {field.itemFields.map((subField) => (
+                                <FormField
+                                  key={subField.name}
+                                  control={form.control}
+                                  name={`${field.name}.${index}.${subField.name}`}
+                                  render={({ field: formField }) => (
+                                      <FormItem
+                                        className={cn(
+                                          "flex-1",
+                                          subField.itemClassName
+                                        )}>
+                                        {subField.type !== 'checkbox' && (
+                                          <FormLabel className={subField.labelClassName}>
+                                            {subField.label}
+                                          </FormLabel>
+                                        )}
+                                        <FormControl className={subField.controlClassName}>
+                                          {renderInput(formField, subField)}
+                                        </FormControl>
+                                        <FormMessage className={subField.messageClassName} />
+                                    </FormItem>
+                                  )}
+                                />
+                              ))}
+                                <div
+                                  className={cn(
+                                    "flex items-end",
+                                    field.removeButtonContainerClassName
+                                  )}
+                                >
+                                <Button 
+                                  type="button" 
+                                  variant="destructive" 
+                                  size="sm"
+                                    className={field.removeButtonClassName}
+                                  onClick={() => remove(index)}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                      <Button 
-                        type="button" 
-                        variant="outline"
-                          className={field.addButtonClassName}
-                        onClick={() => append(emptyItem)}
-                      >
-                        Add {field.label.slice(0, -1)}
-                      </Button>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <FormField
-                      key={field.name}
-                      control={form.control}
-                      name={field.name}
-                      render={({ field: formField }) => (
-                          <FormItem className={field.itemClassName}>
-                            <FormLabel className={field.labelClassName}>
-                              {field.label}
-                            </FormLabel>
-                            <FormControl className={field.controlClassName}>
-                              {renderInput(formField, field)}
-                            </FormControl>
-                            <FormMessage className={field.messageClassName} />
-                        </FormItem>
-                      )}
-                    />
-                  );
-                }
-              })}
+                        ))}
+                        <Button 
+                          type="button" 
+                          variant="outline"
+                            className={field.addButtonClassName}
+                          onClick={() => append(emptyItem)}
+                        >
+                          Add {field.label.slice(0, -1)}
+                        </Button>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <FormField
+                        key={field.name}
+                        control={form.control}
+                        name={field.name}
+                        render={({ field: formField }) => (
+                            <FormItem className={field.itemClassName}>
+                              {field.type !== 'checkbox' && (
+                                <FormLabel className={field.labelClassName}>
+                                  {field.label}
+                                </FormLabel>
+                              )}
+                              <FormControl className={field.controlClassName}>
+                                {renderInput(formField, field)}
+                              </FormControl>
+                              <FormMessage className={field.messageClassName} />
+                          </FormItem>
+                        )}
+                      />
+                    );
+                  }
+                })}
+                </div>
               </div>
-            </div>
-          ))}
-          
-          {/* Form Actions - Only show if showActions is true */}
-          {showActions && (
-            <div
-              className={cn(
-                "flex flex-col-reverse gap-3 sm:flex-row sm:justify-end",
-                config.actionsClassName
-              )}
-            >
-              {onCancel && (
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className={config.cancelButtonClassName}
-                  onClick={onCancel}
-                >
-                  Cancel
-                </Button>
-              )}
-              <Button 
-                type="submit" 
-                className={config.submitButtonClassName}
-                disabled={form.formState.isSubmitting}
+            ))}
+            
+            {/* Custom Actions - Show if provided in config */}
+            {config.customActions && (
+              <div className="mb-4">
+                {config.customActions}
+              </div>
+            )}
+            
+            {/* Form Actions - Only show if showActions is true */}
+            {showActions && (
+              <div
+                className={cn(
+                  "flex flex-col-reverse gap-3 sm:flex-row sm:justify-end",
+                  config.actionsClassName
+                )}
               >
-                {form.formState.isSubmitting ? "Submitting..." : submitLabel}
-              </Button>
-            </div>
-          )}
+                {onCancel && (
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className={config.cancelButtonClassName}
+                    onClick={onCancel}
+                  >
+                    Cancel
+                  </Button>
+                )}
+                <Button 
+                  type="submit" 
+                  className={config.submitButtonClassName}
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting ? "Submitting..." : submitLabel}
+                </Button>
+              </div>
+            )}
+            
+            {/* Custom Footer - Show if provided in config */}
+            {config.footer && (
+              <div className="mt-4">
+                {config.footer}
+              </div>
+            )}
+          </div>
         </form>
       </Form>
     </div>

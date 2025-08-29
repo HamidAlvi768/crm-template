@@ -1,12 +1,13 @@
-import React from 'react'
-import { FormDialog } from '@/components/dialogs/form-dialog'
-import { customerFormConfig } from '@/lib/form-configs'
-import { Button } from '@/components/ui/button'
-import { UsersIcon } from 'lucide-react'
+import React from "react";
+import { FormDialog } from "@/components/dialogs/form-dialog";
+import { customerFormConfig } from '@/lib/form-configs.jsx'
+import { Button } from "@/components/ui/button";
+import { UsersIcon } from "lucide-react";
+import { z } from "zod";
 
 function CreateCustomer({ onCustomerAdded }) {
   return (
-    <FormDialog 
+    <FormDialog
       formConfig={customerFormConfig}
       onSubmit={(formData) => onCustomerAdded(formData)}
       title="Add New Customer"
@@ -21,7 +22,7 @@ function CreateCustomer({ onCustomerAdded }) {
         </Button>
       }
     />
-  )
+  );
 }
 
-export default CreateCustomer
+export default CreateCustomer;

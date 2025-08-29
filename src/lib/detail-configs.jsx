@@ -172,9 +172,15 @@ export const customerDetailConfig = {
         {
           name: 'priority',
           label: 'Priority Level',
-          type: FIELD_TYPES.TEXT,
-          display: 'value',
-          className: "col-span-1"
+          type: FIELD_TYPES.BADGE,
+          display: 'badge',
+          badgeVariant: BADGE_VARIANTS.PRIORITY,
+          className: "col-span-1",
+          badgeMapping: {
+            'low': { variant: 'secondary', label: 'Low' },
+            'medium': { variant: 'default', label: 'Medium' },
+            'high': { variant: 'destructive', label: 'High' }
+          }
         },
         {
           name: 'satisfaction',

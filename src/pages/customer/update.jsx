@@ -1,6 +1,6 @@
 import React from 'react'
 import { FormDialog } from '@/components/dialogs/form-dialog'
-import { customerFormConfig } from '@/lib/form-configs'
+import { customerFormConfig } from '@/lib/form-configs.jsx'
 import { Button } from '@/components/ui/button'
 import { EditIcon } from 'lucide-react'
 
