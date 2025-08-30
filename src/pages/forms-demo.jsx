@@ -10,8 +10,7 @@ import {
   UsersIcon, 
   BuildingIcon, 
   TrendingUpIcon,
-  UserPlusIcon,
-  FileTextIcon
+  UserPlusIcon
 } from 'lucide-react'
 
 function FormsDemoPage() {
@@ -70,32 +69,6 @@ function FormsDemoPage() {
         description="Experience the power of configurable forms for different CRM entities"
       >
         <div className="space-y-6">
-          {/* Overview Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileTextIcon className="size-5" />
-                Dynamic Form System
-              </CardTitle>
-              <CardDescription>
-                This system allows you to create, configure, and manage forms for any CRM entity type.
-                Each form is built from a configuration object and automatically handles validation, 
-                field rendering, and data management.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {entityConfigs.map((entity) => (
-                  <div key={entity.key} className="text-center p-4 border rounded-lg">
-                    <entity.icon className="size-8 mx-auto mb-2 text-primary" />
-                    <h3 className="font-semibold">{entity.label}</h3>
-                    <p className="text-sm text-muted-foreground">{entity.description}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Forms Tabs */}
           <Card>
             <CardHeader>
