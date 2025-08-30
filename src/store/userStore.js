@@ -1,236 +1,157 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from 'zustand';
+import { usersApi } from '../services/api/users';
 
-// User state interface
-const initialState = {
-  // User data
+export const useUserStore = create((set, get) => ({
   users: [],
-  currentUser: null,
-  
-  // UI state
-  isLoading: false,
-  isUpdating: false,
-  
-  // Pagination and filtering
-  pagination: {
-    page: 1,
-    limit: 10,
-    total: 0,
-    totalPages: 0
-  },
-  
-  // Filters and search
-  filters: {
-    search: '',
-    role: '',
-    status: '',
-    department: ''
-  },
-  
-  // Error handling
+  loading: false,
   error: null,
   
-  // Selection state
-  selectedUsers: [],
-  isSelectAll: false
-}
-
-// User store
-export const useUserStore = create(
-  persist(
-    (set, get) => ({
-      ...initialState,
+  // Set loading state
+  setLoading: (loading) => set({ loading }),
+  
+  // Set error state
+  setError: (error) => set({ error }),
+  
+  // Clear error
+  clearError: () => set({ error: null }),
+  
+  // Fetch all users from API
+  fetchUsers: async () => {
+    try {
+      set({ loading: true, error: null });
+      const response = await usersApi.getUsers();
       
-      // Actions
-      fetchUsers: async (params = {}) => {
-        set({ isLoading: true, error: null })
-        try {
-          // TODO: Implement actual API call
-          // const response = await userAPI.getUsers(params)
-          
-          // Mock response for now
-          const mockUsers = [
-            {
-              id: 1,
-              firstName: 'John',
-              lastName: 'Doe',
-              email: 'john.doe@company.com',
-              role: 'admin',
-              status: 'active',
-              department: 'IT',
-              createdAt: '2024-01-15T10:00:00Z',
-              lastLogin: '2024-01-20T14:30:00Z'
-            },
-            {
-              id: 2,
-              firstName: 'Jane',
-              lastName: 'Smith',
-              email: 'jane.smith@company.com',
-              role: 'manager',
-              status: 'active',
-              department: 'Sales',
-              createdAt: '2024-01-10T09:00:00Z',
-              lastLogin: '2024-01-19T16:45:00Z'
-            }
-          ]
-          
-          set({
-            users: mockUsers,
-            pagination: {
-              page: 1,
-              limit: 10,
-              total: mockUsers.length,
-              totalPages: Math.ceil(mockUsers.length / 10)
-            },
-            isLoading: false,
-            error: null
-          })
-          
-          return mockUsers
-        } catch (error) {
-          set({
-            isLoading: false,
-            error: error.message || 'Failed to fetch users'
-          })
-          throw error
-        }
-      },
-      
-      createUser: async (userData) => {
-        set({ isUpdating: true, error: null })
-        try {
-          // TODO: Implement actual API call
-          // const response = await userAPI.createUser(userData)
-          
-          // Mock response
-          const newUser = {
-            id: Date.now(),
-            ...userData,
-            createdAt: new Date().toISOString(),
-            lastLogin: null
-          }
-          
-          set(state => ({
-            users: [newUser, ...state.users],
-            isUpdating: false,
-            error: null
-          }))
-          
-          return newUser
-        } catch (error) {
-          set({
-            isUpdating: false,
-            error: error.message || 'Failed to create user'
-          })
-          throw error
-        }
-      },
-      
-      updateUser: async (userId, userData) => {
-        set({ isUpdating: true, error: null })
-        try {
-          // TODO: Implement actual API call
-          // const response = await userAPI.updateUser(userId, userData)
-          
-          // Mock update
-          set(state => ({
-            users: state.users.map(user => 
-              user.id === userId 
-                ? { ...user, ...userData, updatedAt: new Date().toISOString() }
-                : user
-            ),
-            isUpdating: false,
-            error: null
-          }))
-          
-          return { success: true }
-        } catch (error) {
-          set({
-            isUpdating: false,
-            error: error.message || 'Failed to update user'
-          })
-          throw error
-        }
-      },
-      
-      deleteUser: async (userId) => {
-        set({ isUpdating: true, error: null })
-        try {
-          // TODO: Implement actual API call
-          // await userAPI.deleteUser(userId)
-          
-          // Mock delete
-          set(state => ({
-            users: state.users.filter(user => user.id !== userId),
-            selectedUsers: state.selectedUsers.filter(id => id !== userId),
-            isUpdating: false,
-            error: null
-          }))
-          
-          return { success: true }
-        } catch (error) {
-          set({
-            isUpdating: false,
-            error: error.message || 'Failed to delete user'
-          })
-          throw error
-        }
-      },
-      
-      setCurrentUser: (user) => {
-        set({ currentUser: user })
-      },
-      
-      updatePagination: (pagination) => {
-        set({ pagination: { ...get().pagination, ...pagination } })
-      },
-      
-      updateFilters: (filters) => {
-        set({ 
-          filters: { ...get().filters, ...filters },
-          pagination: { ...get().pagination, page: 1 } // Reset to first page
-        })
-      },
-      
-      selectUser: (userId) => {
-        set(state => ({
-          selectedUsers: state.selectedUsers.includes(userId)
-            ? state.selectedUsers.filter(id => id !== userId)
-            : [...state.selectedUsers, userId]
-        }))
-      },
-      
-      selectAllUsers: () => {
-        const { users, selectedUsers, isSelectAll } = get()
-        if (isSelectAll) {
-          set({ selectedUsers: [], isSelectAll: false })
-        } else {
-          set({ 
-            selectedUsers: users.map(user => user.id), 
-            isSelectAll: true 
-          })
-        }
-      },
-      
-      clearSelection: () => {
-        set({ selectedUsers: [], isSelectAll: false })
-      },
-      
-      clearError: () => {
-        set({ error: null })
-      },
-      
-      reset: () => {
-        set(initialState)
+      if (response.success) {
+        set({ users: response.data });
+      } else {
+        set({ error: response.message || 'Failed to fetch users' });
       }
-    }),
-    {
-      name: 'user-storage',
-      partialize: (state) => ({
-        // Only persist these fields
-        filters: state.filters,
-        pagination: state.pagination
-      })
+      
+      return response;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch users';
+      set({ error: errorMessage });
+      throw new Error(errorMessage);
+    } finally {
+      set({ loading: false });
     }
-  )
-)
+  },
+  
+  // Get user by ID from API
+  getUser: async (id) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await usersApi.getUser(id);
+      
+      if (response.success) {
+        return response.data;
+      } else {
+        set({ error: response.message || 'Failed to fetch user' });
+        return null;
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch user';
+      set({ error: errorMessage });
+      throw new Error(errorMessage);
+    } finally {
+      set({ loading: false });
+    }
+  },
+  
+  // Create new user via API
+  addUser: async (userData) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await usersApi.createUser(userData);
+      
+      if (response.success) {
+        set({ users: [...get().users, response.data] });
+        return response;
+      } else {
+        set({ error: response.message || 'Failed to create user' });
+        return response;
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to create user';
+      set({ error: errorMessage });
+      throw new Error(errorMessage);
+    } finally {
+      set({ loading: false });
+    }
+  },
+  
+  // Update user via API
+  updateUser: async (id, updates) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await usersApi.updateUser(id, updates);
+      
+      if (response.success) {
+        set({
+          users: get().users.map(u => 
+            u.id === id ? { ...u, ...updates } : u
+          )
+        });
+        return response;
+      } else {
+        set({ error: response.message || 'Failed to update user' });
+        return response;
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to update user';
+      set({ error: errorMessage });
+      throw new Error(errorMessage);
+    } finally {
+      set({ loading: false });
+    }
+  },
+  
+  // Delete user via API
+  deleteUser: async (id) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await usersApi.deleteUser(id);
+      
+      if (response.success) {
+        set({
+          users: get().users.filter(u => u.id !== id)
+        });
+        return response;
+      } else {
+        set({ error: response.message || 'Failed to delete user' });
+        return response;
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to delete user';
+      set({ error: errorMessage });
+      throw new Error(errorMessage);
+    } finally {
+      set({ loading: false });
+    }
+  },
+  
+  // Search users via API
+  searchUsers: async (query) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await usersApi.searchUsers(query);
+      
+      if (response.success) {
+        set({ users: response.data });
+      } else {
+        set({ error: response.message || 'Failed to search users' });
+      }
+      
+      return response;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to search users';
+      set({ error: errorMessage });
+      throw new Error(errorMessage);
+    } finally {
+      set({ loading: false });
+    }
+  },
+  
+  // Reset store to initial state
+  reset: () => set({ users: [], loading: false, error: null })
+}));

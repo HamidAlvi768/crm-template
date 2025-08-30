@@ -1,5 +1,5 @@
 // API client configuration and setup
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost/php-crud/api'
 const API_TIMEOUT = 30000 // 30 seconds
 
 // Default headers
@@ -57,6 +57,15 @@ class ApiClient {
       // Handle HTTP errors
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
+        
+        // Handle authentication errors
+        if (response.status === 401) {
+          // Clear auth storage and redirect to login
+          localStorage.removeItem('auth-storage')
+          window.location.href = '/login'
+          throw new Error('Authentication required. Please login again.')
+        }
+        
         throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
       }
       

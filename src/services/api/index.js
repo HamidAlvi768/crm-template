@@ -1,10 +1,7 @@
-// Export all API services
-export { default as authAPI } from './auth'
-export { default as userAPI } from './users'
-export { default as productAPI } from './products'
-
-// Export API client
-export { default as apiClient, ApiClient } from './client'
+export * from './auth';
+export * from './client';
+export * from './products';
+export * from './users';
 
 // API configuration
 export const API_CONFIG = {

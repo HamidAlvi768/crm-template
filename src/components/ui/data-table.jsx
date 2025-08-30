@@ -21,7 +21,7 @@ import { Button } from "./button";
 
 /**
  * Reusable DataTable component built on top of shadcn table components
- *
+ * 
  * @param {Object} props
  * @param {Array} props.data - Array of data objects to display
  * @param {Array} props.columns - Array of column configurations
@@ -34,9 +34,9 @@ import { Button } from "./button";
  * @param {boolean} props.showPagination - Whether to show pagination controls (default: true)
  * @param {Array} props.filterableColumns - Array of column keys that should have filter inputs (default: ['email'])
  */
-export default function DataTable({
-  data,
-  columns,
+export default function DataTable({ 
+  data, 
+  columns, 
   className = "",
   striped = false,
   hover = true,
@@ -259,23 +259,23 @@ export default function DataTable({
       {renderFilters()}
 
       <div className="overflow-x-auto">
-        <Table>
-          <TableHeader columns={columns} />
-          <TableBody>
+      <Table>
+        <TableHeader columns={columns} />
+        <TableBody>
             {currentData.map((row, index) => (
-              <TableRow
-                key={row.id || index}
-                row={row}
-                columns={columns}
+            <TableRow 
+              key={row.id || index} 
+              row={row} 
+              columns={columns}
                 index={startIndex + index}
-                striped={striped}
-                hover={hover}
-                onClick={onRowClick ? () => onRowClick(row) : undefined}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+              striped={striped}
+              hover={hover}
+              onClick={onRowClick ? () => onRowClick(row) : undefined}
+            />
+          ))}
+        </TableBody>
+      </Table>
+    </div>
 
       {renderPagination()}
 
@@ -303,7 +303,7 @@ function TableHeader({ columns }) {
     <ShadcnTableHeader>
       <ShadcnTableRow>
         {columns.map((column) => (
-          <TableHead
+          <TableHead 
             key={String(column.key)}
             className={column.headerClassName}
           >
@@ -342,24 +342,24 @@ function TableRow({ row, columns, index, striped, hover, onClick }) {
   );
 }
 
-/**
- * Table cell component that renders individual cell values
- */
-function TableCell({ value, render, className = "", row }) {
-  return (
-    <ShadcnTableCell className={className}>
+  /**
+   * Table cell component that renders individual cell values
+   */
+  function TableCell({ value, render, className = "", row }) {
+    return (
+      <ShadcnTableCell className={className}>
       {render
         ? render(value, row)
         : value !== null && value !== undefined
         ? String(value)
         : "—"}
-    </ShadcnTableCell>
+      </ShadcnTableCell>
   );
-}
+  }
 
 /**
  * Column configuration type definition (for reference)
- *
+ * 
  * @typedef {Object} ColumnConfig
  * @property {string} key - The data key to access from the row object
  * @property {string} header - The display text for the column header

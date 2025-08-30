@@ -1,18 +1,7 @@
-// thoroughly analyze my project to have a good idea of whats going bcz next i am going to give you a task for making a documentation that must perfectly represent this crm template infrastructure to instrcutor a begginer level engineer on how to build an actuall crm using this template
 
 {
   "title": "CRM Template - CRUD Implementation Guide",
   "description": "Complete step-by-step data flow journey from creation to view in the CRM template",
-  "version": "1.0.0",
-  "overview": {
-    "purpose": "Document the complete CRUD (Create, Read, Update, Delete) data flow in the CRM template",
-    "target_audience": "Beginner to intermediate React developers",
-    "prerequisites": [
-      "Basic React knowledge",
-      "Understanding of JavaScript ES6+",
-      "Familiarity with JSON and object structures"
-    ]
-  },
   "architecture_overview": {
     "data_flow_pattern": "Configuration-Driven → Form → Validation → State → UI",
     "key_components": [

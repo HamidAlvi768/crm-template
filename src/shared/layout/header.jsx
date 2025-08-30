@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { 
   HomeIcon,
   UsersIcon,
+  UserIcon,
   LogInIcon
 } from 'lucide-react'
 
@@ -14,6 +15,7 @@ import {
 const leftNavigationItems = [
   { icon: HomeIcon, label: 'Dashboard', href: '/' },
   { icon: UsersIcon, label: 'Customers', href: '/customers' },
+  { icon: UserIcon, label: 'Users', href: '/users' },
 ]
 
 const rightNavigationItems = [

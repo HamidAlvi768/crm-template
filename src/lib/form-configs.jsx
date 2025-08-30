@@ -634,10 +634,171 @@ export const loginFormConfig = {
   ),
 };
 
+// User Form Configuration
+export const userFormConfig = {
+  className: "",
+  formClassName: "bg-background",
+  actionsClassName: "pt-6 border-t border-border",
+  submitButtonClassName: "bg-primary hover:bg-primary/90",
+  cancelButtonClassName: "hover:bg-muted",
+  
+  sections: [
+    {
+      title: 'Personal Information',
+      className: "space-y-4",
+      titleClassName: "text-primary border-primary/20",
+      fields: [
+        { 
+          name: 'firstName', 
+          label: 'First Name', 
+          type: 'text', 
+          validation: z.string().min(2, 'First name must be at least 2 characters'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'lastName', 
+          label: 'Last Name', 
+          type: 'text', 
+          validation: z.string().min(2, 'Last name must be at least 2 characters'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'email', 
+          label: 'Email', 
+          type: 'email', 
+          validation: z.string().email('Please enter a valid email address'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'phone', 
+          label: 'Phone', 
+          type: 'tel', 
+          validation: z.string().min(10, 'Phone number must be at least 10 characters'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+      ],
+      fieldsContainerClassName: "bs-row",
+    },
+    {
+      title: 'Account & Role',
+      className: "space-y-4",
+      titleClassName: "text-primary border-primary/20",
+      fields: [
+        { 
+          name: 'username', 
+          label: 'Username', 
+          type: 'text',
+          validation: z.string().min(3, 'Username must be at least 3 characters'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'password', 
+          label: 'Password', 
+          type: 'password',
+          validation: z.string().min(8, 'Password must be at least 8 characters'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'role', 
+          label: 'Role', 
+          type: 'select',
+          options: [
+            { value: 'admin', label: 'Administrator' },
+            { value: 'manager', label: 'Manager' },
+            { value: 'user', label: 'User' },
+            { value: 'viewer', label: 'Viewer' },
+          ],
+          validation: z.string().min(1, 'Role is required'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'status', 
+          label: 'Status', 
+          type: 'select',
+          options: [
+            { value: 'active', label: 'Active' },
+            { value: 'inactive', label: 'Inactive' },
+            { value: 'suspended', label: 'Suspended' },
+          ],
+          validation: z.string().min(1, 'Status is required'),
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+      ],
+      fieldsContainerClassName: "bs-row",
+    },
+    {
+      title: 'Department & Location',
+      className: "space-y-4",
+      titleClassName: "text-primary border-primary/20",
+      fields: [
+        { 
+          name: 'department', 
+          label: 'Department', 
+          type: 'select',
+          options: [
+            { value: 'it', label: 'Information Technology' },
+            { value: 'sales', label: 'Sales' },
+            { value: 'marketing', label: 'Marketing' },
+            { value: 'hr', label: 'Human Resources' },
+            { value: 'finance', label: 'Finance' },
+            { value: 'operations', label: 'Operations' },
+            { value: 'other', label: 'Other' },
+          ],
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'location', 
+          label: 'Location', 
+          type: 'text',
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'manager', 
+          label: 'Manager', 
+          type: 'text',
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+        { 
+          name: 'hireDate', 
+          label: 'Hire Date', 
+          type: 'date',
+          itemClassName: "bs-col-12 bs-col-md-6",
+          labelClassName: "font-medium text-foreground",
+          controlClassName: "mt-1"
+        },
+      ],
+      fieldsContainerClassName: "bs-row",
+    },
+  ],
+};
+
 // Export all configurations
 export const formConfigs = {
   customer: customerFormConfig,
   company: companyFormConfig,
   deal: dealFormConfig,
   lead: leadFormConfig,
+  user: userFormConfig,
 };
