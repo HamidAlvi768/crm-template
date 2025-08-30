@@ -1,0 +1,514 @@
+{
+  "title": "CRM Template - CRUD Implementation Guide",
+  "description": "Complete step-by-step data flow journey from creation to view in the CRM template",
+  "version": "1.0.0",
+  "overview": {
+    "purpose": "Document the complete CRUD (Create, Read, Update, Delete) data flow in the CRM template",
+    "target_audience": "Beginner to intermediate React developers",
+    "prerequisites": [
+      "Basic React knowledge",
+      "Understanding of JavaScript ES6+",
+      "Familiarity with JSON and object structures"
+    ]
+  },
+  "architecture_overview": {
+    "data_flow_pattern": "Configuration-Driven → Form → Validation → State → UI",
+    "key_components": [
+      "Form Configuration (lib/form-configs.jsx)",
+      "Dynamic Form Component (components/forms/dynamic-form.jsx)",
+      "Form Dialog (components/dialogs/form-dialog.jsx)",
+      "Zustand Store (store/[module]Store.js)",
+      "Data Table (components/ui/data-table.jsx)",
+      "Page Components (pages/[module]/[action].jsx)"
+    ],
+    "technologies_used": [
+      "React Hook Form for form handling",
+      "Zod for validation",
+      "Zustand for state management",
+      "shadcn/ui for UI components",
+      "Sonner for notifications"
+    ]
+  },
+  "crud_operations": {
+    "create": {
+      "flow_name": "CREATE Operation - Adding New Records",
+      "description": "Complete journey from form configuration to data creation",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Define Form Configuration",
+          "location": "src/lib/form-configs.jsx",
+          "description": "Create form schema with field definitions and validation rules",
+          "code_example": {
+            "file": "form-configs.jsx",
+            "snippet": "export const customerFormConfig = {\n  sections: [\n    {\n      title: 'Personal Information',\n      fields: [\n        {\n          name: 'firstName',\n          label: 'First Name',\n          type: 'text',\n          validation: z.string().min(2, 'First name must be at least 2 characters')\n        }\n      ]\n    }\n  ]\n}"
+          },
+          "key_points": [
+            "Define field types (text, email, number, select, etc.)",
+            "Set validation rules using Zod schemas",
+            "Configure field layout with Bootstrap Grid classes",
+            "Specify form styling and behavior"
+          ]
+        },
+        {
+          "step": 2,
+          "title": "Create Store for State Management",
+          "location": "src/store/[module]Store.js",
+          "description": "Set up Zustand store to manage module data and operations",
+          "code_example": {
+            "file": "customerStore.js",
+            "snippet": "export const useCustomerStore = create(\n  persist(\n    (set, get) => ({\n      customers: [],\n      addCustomer: (customer) => {\n        const newCustomer = { ...customer, id: Date.now() }\n        set({ customers: [...get().customers, newCustomer] })\n        return newCustomer\n      }\n    }),\n    { name: 'customer-storage' }\n  )\n)"
+          },
+          "key_points": [
+            "Define initial state with empty array for data",
+            "Create CRUD action functions (add, update, delete)",
+            "Use persist middleware for localStorage",
+            "Handle loading and error states"
+          ]
+        },
+        {
+          "step": 3,
+          "title": "Create Form Dialog Component",
+          "location": "src/pages/[module]/create.jsx",
+          "description": "Build the create component using FormDialog wrapper",
+          "code_example": {
+            "file": "create.jsx",
+            "snippet": "function CreateCustomer({ onCustomerAdded }) {\n  return (\n    <FormDialog\n      formConfig={customerFormConfig}\n      onSubmit={(formData) => onCustomerAdded(formData)}\n      title=\"Add New Customer\"\n      submitLabel=\"Save\"\n      trigger={\n        <Button>\n          <UsersIcon className=\"size-4 mr-2\" />\n          Add Customer\n        </Button>\n      }\n    />\n  )\n}"
+          },
+          "key_points": [
+            "Use FormDialog component for modal form",
+            "Pass form configuration from step 1",
+            "Handle form submission with callback",
+            "Customize trigger button and dialog title"
+          ]
+        },
+        {
+          "step": 4,
+          "title": "Form Rendering and Validation",
+          "location": "src/components/forms/dynamic-form.jsx",
+          "description": "Dynamic form component processes configuration and renders form",
+          "process_flow": [
+            "Receives formConfig prop with field definitions",
+            "Builds Zod schema from field validation rules",
+            "Creates React Hook Form instance with resolver",
+            "Renders form sections and fields based on configuration",
+            "Handles real-time validation and error display",
+            "Manages form state and submission"
+          ],
+          "key_points": [
+            "Automatic form generation from configuration",
+            "Real-time validation with error messages",
+            "Support for multiple field types and layouts",
+            "Form reset and submission handling"
+          ]
+        },
+        {
+          "step": 5,
+          "title": "Data Processing and Storage",
+          "location": "src/pages/[module]/list.jsx",
+          "description": "Handle form submission and update application state",
+          "code_example": {
+            "file": "list.jsx",
+            "snippet": "const handleCustomerAdded = (newCustomer) => {\n  const newId = Math.max(...customers.map(c => c.id)) + 1\n  const customerWithDefaults = {\n    ...newCustomer,\n    id: newId,\n    // Add default values for missing fields\n  }\n  setCustomers([...customers, customerWithDefaults])\n  toast.success('Customer added successfully!')\n}"
+          },
+          "key_points": [
+            "Generate unique ID for new record",
+            "Add default values for optional fields",
+            "Update local state with new data",
+            "Show success notification to user"
+          ]
+        },
+        {
+          "step": 6,
+          "title": "UI Update and Feedback",
+          "location": "src/components/ui/data-table.jsx",
+          "description": "Data table automatically reflects new data and shows success feedback",
+          "process_flow": [
+            "Data table receives updated customers array",
+            "Table re-renders with new row",
+            "Toast notification appears with success message",
+            "Form dialog closes automatically",
+            "User sees new record in the table"
+          ],
+          "key_points": [
+            "Automatic UI updates through React state",
+            "Immediate visual feedback with toast notifications",
+            "Seamless user experience with modal closure",
+            "Data persistence through Zustand store"
+          ]
+        }
+      ],
+      "data_flow_summary": "Configuration → Form → Validation → State Update → UI Refresh → User Feedback"
+    },
+    "read": {
+      "flow_name": "READ Operation - Displaying Data",
+      "description": "How data is fetched, processed, and displayed in the UI",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Data Source Definition",
+          "location": "src/pages/[module]/list.jsx",
+          "description": "Define data source (local state, API, or store)",
+          "code_example": {
+            "file": "list.jsx",
+            "snippet": "const [customers, setCustomers] = useState([\n  {\n    id: 1,\n    firstName: 'John',\n    lastName: 'Smith',\n    email: 'john@example.com',\n    status: 'active'\n  }\n])"
+          },
+          "key_points": [
+            "Initialize with sample data or empty array",
+            "Can be connected to API or Zustand store",
+            "Define data structure matching form configuration"
+          ]
+        },
+        {
+          "step": 2,
+          "title": "Table Column Configuration",
+          "location": "src/pages/[module]/list.jsx",
+          "description": "Define how data should be displayed in the table",
+          "code_example": {
+            "file": "list.jsx",
+            "snippet": "const customerColumns = [\n  {\n    key: 'id',\n    header: 'ID',\n    cellClassName: 'font-mono text-sm'\n  },\n  {\n    key: 'name',\n    header: 'Customer Name',\n    render: (value, row) => (\n      <div>\n        <div className=\"font-medium\">{`${row.firstName} ${row.lastName}`}</div>\n        <div className=\"text-sm text-muted-foreground\">{row.jobTitle}</div>\n      </div>\n    )\n  }\n]"
+          },
+          "key_points": [
+            "Define column structure with key, header, and render functions",
+            "Custom render functions for complex data display",
+            "Styling classes for consistent appearance",
+            "Support for badges, links, and custom components"
+          ]
+        },
+        {
+          "step": 3,
+          "title": "Data Table Rendering",
+          "location": "src/components/ui/data-table.jsx",
+          "description": "DataTable component processes data and renders table",
+          "process_flow": [
+            "Receives data array and columns configuration",
+            "Processes data through column render functions",
+            "Applies filtering and sorting if configured",
+            "Implements pagination for large datasets",
+            "Renders table with consistent styling",
+            "Handles empty states and loading states"
+          ],
+          "key_points": [
+            "Automatic table generation from configuration",
+            "Built-in pagination and filtering",
+            "Responsive design with mobile support",
+            "Empty state handling with custom messages"
+          ]
+        },
+        {
+          "step": 4,
+          "title": "Detail View Implementation",
+          "location": "src/pages/[module]/detail.jsx",
+          "description": "Modal dialog for viewing detailed record information",
+          "code_example": {
+            "file": "detail.jsx",
+            "snippet": "function CustomerDetail({ customer }) {\n  return (\n    <Dialog>\n      <DialogTrigger asChild>\n        <Button variant=\"outline\" size=\"sm\">\n          <EyeIcon className=\"size-4\" />\n        </Button>\n      </DialogTrigger>\n      <DialogContent>\n        <DialogHeader>\n          <DialogTitle>Customer Details</DialogTitle>\n        </DialogHeader>\n        <div className=\"space-y-4\">\n          <div>\n            <label className=\"text-sm font-medium\">Name</label>\n            <p className=\"text-sm\">{customer.firstName} {customer.lastName}</p>\n          </div>\n        </div>\n      </DialogContent>\n    </Dialog>\n  )\n}"
+          },
+          "key_points": [
+            "Modal dialog for detailed view",
+            "Read-only display of all record fields",
+            "Consistent styling with form layouts",
+            "Easy access from table actions"
+          ]
+        }
+      ],
+      "data_flow_summary": "Data Source → Column Config → Table Render → User Interaction → Detail View"
+    },
+    "update": {
+      "flow_name": "UPDATE Operation - Modifying Existing Records",
+      "description": "Complete journey for editing and updating existing data",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Update Component Creation",
+          "location": "src/pages/[module]/update.jsx",
+          "description": "Create update component with pre-populated form",
+          "code_example": {
+            "file": "update.jsx",
+            "snippet": "function UpdateCustomer({ customer, onEdit }) {\n  return (\n    <FormDialog\n      formConfig={customerFormConfig}\n      initialData={customer}\n      onSubmit={(formData) => onEdit({ ...customer, ...formData })}\n      title=\"Edit Customer\"\n      submitLabel=\"Update\"\n      trigger={\n        <Button variant=\"outline\" size=\"sm\">\n          <EditIcon className=\"size-4\" />\n        </Button>\n      }\n    />\n  )\n}"
+          },
+          "key_points": [
+            "Use same form configuration as create",
+            "Pass existing data as initialData prop",
+            "Merge updated data with existing record",
+            "Customize dialog title and submit button"
+          ]
+        },
+        {
+          "step": 2,
+          "title": "Form Pre-population",
+          "location": "src/components/forms/dynamic-form.jsx",
+          "description": "Dynamic form automatically populates with existing data",
+          "process_flow": [
+            "Receives initialData prop with existing record",
+            "Merges initialData with default values",
+            "Pre-fills all form fields with current values",
+            "Maintains validation rules and field types",
+            "Shows current data for user editing"
+          ],
+          "key_points": [
+            "Automatic form pre-population",
+            "Preserves data integrity",
+            "Maintains validation and styling",
+            "Seamless editing experience"
+          ]
+        },
+        {
+          "step": 3,
+          "title": "Data Update Processing",
+          "location": "src/pages/[module]/list.jsx",
+          "description": "Handle form submission and update existing record",
+          "code_example": {
+            "file": "list.jsx",
+            "snippet": "const handleEditCustomer = (updatedCustomer) => {\n  setCustomers(customers.map(c => \n    c.id === updatedCustomer.id ? updatedCustomer : c\n  ))\n  toast.success('Customer updated successfully!', {\n    description: `${updatedCustomer.firstName} ${updatedCustomer.lastName} has been updated.`\n  })\n}"
+          },
+          "key_points": [
+            "Find record by ID and update in array",
+            "Preserve other records unchanged",
+            "Show success notification with details",
+            "Update local state immediately"
+          ]
+        },
+        {
+          "step": 4,
+          "title": "UI Refresh and Feedback",
+          "location": "src/components/ui/data-table.jsx",
+          "description": "Table automatically reflects updated data",
+          "process_flow": [
+            "Data table receives updated customers array",
+            "Table re-renders with modified row data",
+            "Updated information displays immediately",
+            "Toast notification confirms successful update",
+            "Form dialog closes automatically"
+          ],
+          "key_points": [
+            "Immediate UI updates through React state",
+            "Visual confirmation of changes",
+            "Consistent user feedback",
+            "Seamless editing workflow"
+          ]
+        }
+      ],
+      "data_flow_summary": "Edit Trigger → Form Pre-populate → User Edit → Data Update → UI Refresh → Feedback"
+    },
+    "delete": {
+      "flow_name": "DELETE Operation - Removing Records",
+      "description": "Complete journey for safely removing data with confirmation",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Delete Component Creation",
+          "location": "src/pages/[module]/delete.jsx",
+          "description": "Create delete component with confirmation dialog",
+          "code_example": {
+            "file": "delete.jsx",
+            "snippet": "function DeleteCustomer({ customer, onDelete }) {\n  return (\n    <AlertDialog>\n      <AlertDialogTrigger asChild>\n        <Button variant=\"outline\" size=\"sm\" className=\"text-destructive\">\n          <TrashIcon className=\"size-4\" />\n        </Button>\n      </AlertDialogTrigger>\n      <AlertDialogContent>\n        <AlertDialogHeader>\n          <AlertDialogTitle>Delete Customer</AlertDialogTitle>\n          <AlertDialogDescription>\n            Are you sure you want to delete \"{customer.firstName} {customer.lastName}\"?\n            This action cannot be undone.\n          </AlertDialogDescription>\n        </AlertDialogHeader>\n        <AlertDialogFooter>\n          <AlertDialogCancel>Cancel</AlertDialogCancel>\n          <AlertDialogAction onClick={() => onDelete(customer)}>\n            Delete\n          </AlertDialogAction>\n        </AlertDialogFooter>\n      </AlertDialogContent>\n    </AlertDialog>\n  )\n}"
+          },
+          "key_points": [
+            "Use AlertDialog for confirmation",
+            "Show record details in confirmation message",
+            "Provide clear warning about permanent deletion",
+            "Style delete button with destructive variant"
+          ]
+        },
+        {
+          "step": 2,
+          "title": "Confirmation Dialog Display",
+          "location": "src/components/ui/alert-dialog.jsx",
+          "description": "AlertDialog component handles user confirmation",
+          "process_flow": [
+            "User clicks delete button",
+            "AlertDialog opens with confirmation message",
+            "Shows record details for verification",
+            "Provides Cancel and Delete options",
+            "Waits for user decision"
+          ],
+          "key_points": [
+            "Prevents accidental deletions",
+            "Clear confirmation message",
+            "Easy cancel option",
+            "Accessible dialog implementation"
+          ]
+        },
+        {
+          "step": 3,
+          "title": "Data Removal Processing",
+          "location": "src/pages/[module]/list.jsx",
+          "description": "Handle confirmation and remove record from data",
+          "code_example": {
+            "file": "list.jsx",
+            "snippet": "const handleDeleteCustomer = (customer) => {\n  setCustomers(customers.filter(c => c.id !== customer.id))\n  toast.success('Customer deleted successfully!', {\n    description: `${customer.firstName} ${customer.lastName} has been removed from your database.`\n  })\n}"
+          },
+          "key_points": [
+            "Filter out deleted record from array",
+            "Preserve all other records",
+            "Show success notification with details",
+            "Update local state immediately"
+          ]
+        },
+        {
+          "step": 4,
+          "title": "UI Update and Feedback",
+          "location": "src/components/ui/data-table.jsx",
+          "description": "Table automatically reflects removed data",
+          "process_flow": [
+            "Data table receives updated customers array",
+            "Deleted row disappears from table",
+            "Table re-renders with remaining data",
+            "Success notification confirms deletion",
+            "Confirmation dialog closes automatically"
+          ],
+          "key_points": [
+            "Immediate removal from UI",
+            "Visual confirmation of deletion",
+            "Consistent user feedback",
+            "Safe deletion workflow"
+          ]
+        }
+      ],
+      "data_flow_summary": "Delete Trigger → Confirmation → User Confirm → Data Remove → UI Update → Feedback"
+    }
+  },
+  "implementation_checklist": {
+    "create_operation": [
+      "✓ Define form configuration in lib/form-configs.jsx",
+      "✓ Create Zustand store with add function",
+      "✓ Build create component with FormDialog",
+      "✓ Handle form submission and state update",
+      "✓ Add success notification",
+      "✓ Test form validation and error handling"
+    ],
+    "read_operation": [
+      "✓ Define data source (state, API, or store)",
+      "✓ Configure table columns with render functions",
+      "✓ Implement DataTable component",
+      "✓ Create detail view component",
+      "✓ Add empty state handling",
+      "✓ Test data display and interactions"
+    ],
+    "update_operation": [
+      "✓ Create update component with FormDialog",
+      "✓ Pass existing data as initialData",
+      "✓ Handle form submission with data merge",
+      "✓ Update state with modified record",
+      "✓ Add success notification",
+      "✓ Test form pre-population and updates"
+    ],
+    "delete_operation": [
+      "✓ Create delete component with AlertDialog",
+      "✓ Add confirmation message with record details",
+      "✓ Handle confirmation and data removal",
+      "✓ Update state by filtering out deleted record",
+      "✓ Add success notification",
+      "✓ Test confirmation dialog and deletion"
+    ]
+  },
+  "common_patterns": {
+    "form_handling": {
+      "pattern": "Configuration → Dynamic Form → Validation → Submission",
+      "benefits": [
+        "Reusable form components",
+        "Consistent validation",
+        "Easy maintenance",
+        "Type safety with Zod"
+      ]
+    },
+    "state_management": {
+      "pattern": "Zustand Store → Local State → UI Update",
+      "benefits": [
+        "Centralized state management",
+        "Persistence with localStorage",
+        "Simple API for CRUD operations",
+        "Predictable state updates"
+      ]
+    },
+    "ui_consistency": {
+      "pattern": "shadcn/ui Components → Consistent Styling → Responsive Design",
+      "benefits": [
+        "Professional appearance",
+        "Accessibility built-in",
+        "Mobile-responsive",
+        "Easy customization"
+      ]
+    },
+    "user_feedback": {
+      "pattern": "Action → Toast Notification → Visual Update",
+      "benefits": [
+        "Clear user feedback",
+        "Non-intrusive notifications",
+        "Consistent messaging",
+        "Better user experience"
+      ]
+    }
+  },
+  "best_practices": {
+    "form_development": [
+      "Always define validation rules in form configuration",
+      "Use descriptive field labels and placeholders",
+      "Provide clear error messages",
+      "Test all field types and validation scenarios"
+    ],
+    "state_management": [
+      "Keep store actions simple and focused",
+      "Use TypeScript for better type safety",
+      "Handle loading and error states",
+      "Implement proper data persistence"
+    ],
+    "ui_development": [
+      "Use consistent component patterns",
+      "Implement proper loading states",
+      "Handle empty states gracefully",
+      "Ensure mobile responsiveness"
+    ],
+    "user_experience": [
+      "Provide immediate feedback for all actions",
+      "Use confirmation dialogs for destructive actions",
+      "Implement proper error handling",
+      "Maintain consistent navigation patterns"
+    ]
+  },
+  "troubleshooting": {
+    "common_issues": [
+      {
+        "issue": "Form not rendering fields",
+        "solution": "Check form configuration structure and field definitions",
+        "prevention": "Use TypeScript and validate configuration objects"
+      },
+      {
+        "issue": "Data not updating in table",
+        "solution": "Verify state update functions and data flow",
+        "prevention": "Use React DevTools to inspect state changes"
+      },
+      {
+        "issue": "Validation errors not showing",
+        "solution": "Check Zod schema and form resolver setup",
+        "prevention": "Test validation rules independently"
+      },
+      {
+        "issue": "Dialog not opening",
+        "solution": "Verify trigger component and dialog state",
+        "prevention": "Use consistent dialog patterns across components"
+      }
+    ]
+  },
+  "next_steps": {
+    "for_beginners": [
+      "Start with the Customer module as a reference",
+      "Practice creating simple form configurations",
+      "Experiment with different field types",
+      "Build a simple module following the patterns"
+    ],
+    "for_advanced_developers": [
+      "Implement API integration with the existing patterns",
+      "Add advanced features like bulk operations",
+      "Implement real-time updates with WebSockets",
+      "Add comprehensive testing coverage"
+    ],
+    "production_considerations": [
+      "Implement proper error boundaries",
+      "Add comprehensive logging and monitoring",
+      "Implement proper security measures",
+      "Add performance optimization and caching"
+    ]
+  }
+}
