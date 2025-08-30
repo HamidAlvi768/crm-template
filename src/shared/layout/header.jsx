@@ -5,13 +5,19 @@ import { Button } from '@/components/ui/button'
 import { 
   HomeIcon,
   UsersIcon,
-  FileTextIcon
+  LogInIcon
 } from 'lucide-react'
 
-const navigationItems = [
+// IMPORTANT: All navigation items must be added here to ensure consistent styling
+// This array is processed by the map function which applies uniform styling logic
+// including variants, hover effects, and active states for all navigation elements
+const leftNavigationItems = [
   { icon: HomeIcon, label: 'Dashboard', href: '/' },
   { icon: UsersIcon, label: 'Customers', href: '/customers' },
-  { icon: FileTextIcon, label: 'Forms Demo', href: '/forms-demo' },
+]
+
+const rightNavigationItems = [
+  { icon: LogInIcon, label: 'Login', href: '/login' },
 ]
 
 function Header({ className, ...props }) {
@@ -25,7 +31,7 @@ function Header({ className, ...props }) {
   return (
     <header 
       className={cn(
-        "border-b border-border bg-background",
+        "border-b border-border bg-header",
         className
       )}
       {...props}
@@ -37,15 +43,15 @@ function Header({ className, ...props }) {
           <div className="flex items-center">
             <button 
               onClick={() => handleNavigation('/')}
-              className="text-xl font-bold text-primary hover:text-primary/80 transition-colors cursor-pointer mr-8"
+              className="text-xl font-bold text-white hover:text-white/80 transition-colors cursor-pointer mr-8"
             >
               CRM System
             </button>
           </div>
 
-          {/* Navigation Items */}
+          {/* Left Navigation Items */}
           <div className="flex items-center space-x-1">
-            {navigationItems.map((item) => {
+            {leftNavigationItems.map((item) => {
               const Icon = item.icon
               const isActive = location.pathname === item.href
               return (
@@ -54,8 +60,31 @@ function Header({ className, ...props }) {
                   variant={isActive ? "secondary" : "ghost"}
                   size="sm"
                   className={cn(
-                    "gap-2",
-                    isActive && "bg-secondary text-secondary-foreground"
+                    "gap-2 text-white hover:text-white/90 hover:bg-white/20",
+                    isActive && "bg-white/20 text-white"
+                  )}
+                  onClick={() => handleNavigation(item.href)}
+                >
+                  <Icon className="size-4" />
+                  {item.label}
+                </Button>
+              )
+            })}
+          </div>
+
+          {/* Right Navigation Items */}
+          <div className="ml-auto">
+            {rightNavigationItems.map((item) => {
+              const Icon = item.icon
+              const isActive = location.pathname === item.href
+              return (
+                <Button
+                  key={item.label}
+                  variant={isActive ? "secondary" : "ghost"}
+                  size="sm"
+                  className={cn(
+                    "gap-2 text-white hover:text-white/90 hover:bg-white/20",
+                    isActive && "bg-white/20 text-white"
                   )}
                   onClick={() => handleNavigation(item.href)}
                 >
