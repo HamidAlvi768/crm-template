@@ -4,7 +4,7 @@ import { customerFormConfig } from '@/lib/form-configs.jsx'
 import { Button } from '@/components/ui/button'
 import { EditIcon } from 'lucide-react'
 
-function UpdateCustomer({ customer, onEdit }) {
+function UpdateCustomer({ data: customer, onEdit }) {
   return (
     <FormDialog 
       formConfig={customerFormConfig}

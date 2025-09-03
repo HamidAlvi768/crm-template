@@ -28,7 +28,7 @@ export const useUserStore = create((set, get) => ({
       }
       
       return response;
-    } catch (error) {
+        } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch users';
       set({ error: errorMessage });
       throw new Error(errorMessage);
@@ -49,7 +49,7 @@ export const useUserStore = create((set, get) => ({
         set({ error: response.message || 'Failed to fetch user' });
         return null;
       }
-    } catch (error) {
+        } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch user';
       set({ error: errorMessage });
       throw new Error(errorMessage);
@@ -71,7 +71,7 @@ export const useUserStore = create((set, get) => ({
         set({ error: response.message || 'Failed to create user' });
         return response;
       }
-    } catch (error) {
+        } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || 'Failed to create user';
       set({ error: errorMessage });
       throw new Error(errorMessage);
@@ -97,7 +97,7 @@ export const useUserStore = create((set, get) => ({
         set({ error: response.message || 'Failed to update user' });
         return response;
       }
-    } catch (error) {
+        } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || 'Failed to update user';
       set({ error: errorMessage });
       throw new Error(errorMessage);
@@ -113,11 +113,11 @@ export const useUserStore = create((set, get) => ({
       const response = await usersApi.deleteUser(id);
       
       if (response.success) {
-        set({
+        set({ 
           users: get().users.filter(u => u.id !== id)
         });
         return response;
-      } else {
+        } else {
         set({ error: response.message || 'Failed to delete user' });
         return response;
       }

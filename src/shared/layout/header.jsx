@@ -6,8 +6,11 @@ import {
   HomeIcon,
   UsersIcon,
   UserIcon,
-  LogInIcon
+  LogInIcon,
+  LogOutIcon,
+  UserCircleIcon
 } from 'lucide-react'
+import { useAuth } from '@/hooks/useAuth'
 
 // IMPORTANT: All navigation items must be added here to ensure consistent styling
 // This array is processed by the map function which applies uniform styling logic
@@ -18,16 +21,22 @@ const leftNavigationItems = [
   { icon: UserIcon, label: 'Users', href: '/users' },
 ]
 
-const rightNavigationItems = [
-  { icon: LogInIcon, label: 'Login', href: '/login' },
-]
-
 function Header({ className, ...props }) {
   const location = useLocation()
   const navigate = useNavigate()
+  const { isAuthenticated, user, logout } = useAuth()
 
   const handleNavigation = (href) => {
     navigate(href)
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      navigate('/login')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
   }
 
   return (
@@ -75,26 +84,43 @@ function Header({ className, ...props }) {
           </div>
 
           {/* Right Navigation Items */}
-          <div className="ml-auto">
-            {rightNavigationItems.map((item) => {
-              const Icon = item.icon
-              const isActive = location.pathname === item.href
-              return (
+          <div className="ml-auto flex items-center space-x-3">
+            {isAuthenticated ? (
+              <>
+                {/* User Info */}
+                <div className="flex items-center space-x-2 text-white">
+                  <UserCircleIcon className="size-5" />
+                  <span className="text-sm font-medium">
+                    {user?.username || user?.email || 'User'}
+                  </span>
+                </div>
+                
+                {/* Logout Button */}
                 <Button
-                  key={item.label}
-                  variant={isActive ? "secondary" : "ghost"}
+                  variant="ghost"
                   size="sm"
-                  className={cn(
-                    "gap-2 text-white hover:text-white/90 hover:bg-white/20",
-                    isActive && "bg-white/20 text-white"
-                  )}
-                  onClick={() => handleNavigation(item.href)}
+                  className="gap-2 text-white hover:text-white/90 hover:bg-white/20"
+                  onClick={handleLogout}
                 >
-                  <Icon className="size-4" />
-                  {item.label}
+                  <LogOutIcon className="size-4" />
+                  Logout
                 </Button>
-              )
-            })}
+              </>
+            ) : (
+              /* Login Button - only show when not authenticated */
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  "gap-2 text-white hover:text-white/90 hover:bg-white/20",
+                  location.pathname === '/login' && "bg-white/20 text-white"
+                )}
+                onClick={() => handleNavigation('/login')}
+              >
+                <LogInIcon className="size-4" />
+                Login
+              </Button>
+            )}
           </div>
         </div>
       </nav>

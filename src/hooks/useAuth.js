@@ -1,10 +1,9 @@
 import { useEffect, useCallback } from 'react'
-import { useAuthStore } from '@/store'
-import { authAPI } from '@/services/api'
+import { useAuthStore } from '@/store/authStore'
 
 /**
  * Custom hook for authentication logic
- * Provides authentication state and methods
+ * Provides authentication state and methods with centralized logic
  */
 export const useAuth = () => {
   const {
@@ -20,12 +19,13 @@ export const useAuth = () => {
     // Actions
     login,
     logout,
-    refreshToken,
-    updateUser,
+    checkAuth,
+    getProfile,
+    updateProfile,
+    changePassword,
+    forgotPassword,
     clearError,
-    setLoading,
-    checkSession,
-    reset
+    updateActivity
   } = useAuthStore()
 
   // Auto-refresh token when needed
@@ -37,7 +37,8 @@ export const useAuth = () => {
         
         // Refresh token if it's older than 25 minutes (5 minutes before expiry)
         if (tokenAge > 25 * 60 * 1000) {
-          refreshToken()
+          // For now, just update activity - implement refresh logic later
+          updateActivity()
         }
       }
 
@@ -49,17 +50,14 @@ export const useAuth = () => {
       
       return () => clearInterval(interval)
     }
-  }, [isAuthenticated, token, lastActivity, refreshToken])
+  }, [isAuthenticated, token, lastActivity, updateActivity])
 
   // Check session on mount and user activity
   useEffect(() => {
     if (isAuthenticated) {
-      // Check session on mount
-      checkSession()
-      
       // Set up activity listeners
       const handleActivity = () => {
-        checkSession()
+        updateActivity()
       }
       
       const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart']
@@ -73,92 +71,7 @@ export const useAuth = () => {
         })
       }
     }
-  }, [isAuthenticated, checkSession])
-
-  // Enhanced login with API integration
-  const loginWithAPI = useCallback(async (credentials) => {
-    try {
-      setLoading(true)
-      clearError()
-      
-      // Call API
-      const response = await authAPI.login(credentials)
-      
-      // Update store with API response
-      const { user: apiUser, token: apiToken } = response
-      
-      // Update store
-      await login({
-        email: credentials.email,
-        password: credentials.password
-      })
-      
-      return { success: true, user: apiUser }
-    } catch (error) {
-      // Error is already handled by the store
-      throw error
-    } finally {
-      setLoading(false)
-    }
-  }, [login, setLoading, clearError])
-
-  // Enhanced logout with API integration
-  const logoutWithAPI = useCallback(async () => {
-    try {
-      if (token) {
-        // Call logout API
-        await authAPI.logout()
-      }
-    } catch (error) {
-      console.warn('Logout API call failed:', error)
-    } finally {
-      // Always clear local state
-      logout()
-    }
-  }, [token, logout])
-
-  // Enhanced refresh token with API integration
-  const refreshTokenWithAPI = useCallback(async () => {
-    try {
-      setLoading(true)
-      clearError()
-      
-      // Call API
-      const response = await authAPI.refreshToken()
-      
-      // Update store
-      await refreshToken()
-      
-      return { success: true, data: response }
-    } catch (error) {
-      // Error is already handled by the store
-      throw error
-    } finally {
-      setLoading(false)
-    }
-  }, [refreshToken, setLoading, clearError])
-
-  // Check authentication status on mount
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      if (isInitializing && !isAuthenticated) {
-        try {
-          const authStatus = await authAPI.checkAuth()
-          if (authStatus.isAuthenticated) {
-            // Update store with user data
-            updateUser(authStatus.user)
-          }
-        } catch (error) {
-          console.warn('Failed to check auth status:', error)
-        } finally {
-          // Mark initialization as complete
-          useAuthStore.setState({ isInitializing: false })
-        }
-      }
-    }
-
-    checkAuthStatus()
-  }, [isInitializing, isAuthenticated, updateUser])
+  }, [isAuthenticated, updateActivity])
 
   // Check if user has specific permission
   const hasPermission = useCallback((permission) => {
@@ -178,18 +91,21 @@ export const useAuth = () => {
     return Array.isArray(roles) ? roles.includes(user.role) : roles === user.role
   }, [user])
 
-  // Get user's full name
-  const getUserFullName = useCallback(() => {
+  // Get user's display name
+  const getUserDisplayName = useCallback(() => {
     if (!user) return ''
-    return `${user.firstName || ''} ${user.lastName || ''}`.trim()
+    return user.username || user.email || 'User'
   }, [user])
 
   // Get user's initials
   const getUserInitials = useCallback(() => {
     if (!user) return ''
-    const firstName = user.firstName || ''
-    const lastName = user.lastName || ''
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
+    const username = user.username || user.email || ''
+    if (username) {
+      // For username, take first two characters
+      return username.substring(0, 2).toUpperCase()
+    }
+    return 'U' // Default fallback
   }, [user])
 
   return {
@@ -203,18 +119,19 @@ export const useAuth = () => {
     lastActivity,
     
     // Computed values
-    userFullName: getUserFullName(),
+    userDisplayName: getUserDisplayName(),
     userInitials: getUserInitials(),
     
     // Methods
-    login: loginWithAPI,
-    logout: logoutWithAPI,
-    refreshToken: refreshTokenWithAPI,
-    updateUser,
+    login,
+    logout,
+    checkAuth,
+    getProfile,
+    updateProfile,
+    changePassword,
+    forgotPassword,
     clearError,
-    setLoading,
-    checkSession,
-    reset,
+    updateActivity,
     
     // Permission checks
     hasPermission,
@@ -222,7 +139,7 @@ export const useAuth = () => {
     hasAnyRole,
     
     // Utility methods
-    getUserFullName,
+    getUserDisplayName,
     getUserInitials
   }
 }

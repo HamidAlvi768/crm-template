@@ -33,6 +33,9 @@ import { Button } from "./button";
  * @param {number} props.itemsPerPage - Number of items to show per page (default: 10)
  * @param {boolean} props.showPagination - Whether to show pagination controls (default: true)
  * @param {Array} props.filterableColumns - Array of column keys that should have filter inputs (default: ['email'])
+ * @param {Array} props.actions - Array of action button configurations
+ * @param {string} props.actionsColumnHeader - Header text for actions column (default: 'Actions')
+ * @param {string} props.actionsColumnClassName - CSS classes for actions column
  */
 export default function DataTable({ 
   data, 
@@ -45,6 +48,9 @@ export default function DataTable({
   itemsPerPage = 10,
   showPagination = true,
   filterableColumns = ["email"],
+  actions = [],
+  actionsColumnHeader = "Actions",
+  actionsColumnClassName = "w-32",
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [columnFilters, setColumnFilters] = useState({});
@@ -71,6 +77,20 @@ export default function DataTable({
       );
     });
   }, [data, appliedFilters]);
+
+  // Add actions column if actions are provided
+  const finalColumns = useMemo(() => {
+    if (!actions || actions.length === 0) return columns;
+    
+    const actionsColumn = {
+      key: 'actions',
+      header: actionsColumnHeader,
+      render: (value, row) => renderActions(row),
+      cellClassName: actionsColumnClassName,
+    };
+    
+    return [...columns, actionsColumn];
+  }, [columns, actions, actionsColumnHeader, actionsColumnClassName]);
 
   // Calculate pagination based on filtered data
   const totalPages = Math.ceil((filteredData?.length || 0) / itemsPerPage);
@@ -110,6 +130,70 @@ export default function DataTable({
     setAppliedFilters({});
   };
 
+  // Render action buttons for a row
+  const renderActions = (row) => {
+    if (!actions || actions.length === 0) return null;
+
+    return (
+      <div className="flex gap-2">
+        {actions.map((action, index) => {
+          const { type, component: ActionComponent, props = {}, ...actionProps } = action;
+          
+          // Handle different action types
+          switch (type) {
+            case 'view':
+              return (
+                <ActionComponent
+                  key={`${type}-${index}`}
+                  {...actionProps}
+                  {...props}
+                  data={row}
+                />
+              );
+            case 'edit':
+              return (
+                <ActionComponent
+                  key={`${type}-${index}`}
+                  {...actionProps}
+                  {...props}
+                  data={row}
+                  onEdit={action.onEdit}
+                />
+              );
+            case 'delete':
+              return (
+                <ActionComponent
+                  key={`${type}-${index}`}
+                  {...actionProps}
+                  {...props}
+                  data={row}
+                  onDelete={action.onDelete}
+                />
+              );
+            case 'custom':
+              return (
+                <ActionComponent
+                  key={`${type}-${index}`}
+                  {...actionProps}
+                  {...props}
+                  data={row}
+                />
+              );
+            default:
+              return (
+                <ActionComponent
+                  key={`${type}-${index}`}
+                  {...actionProps}
+                  {...props}
+                  data={row}
+                />
+              );
+          }
+        })}
+      </div>
+    );
+  };
+
   const renderFilters = () => {
     if (!filterableColumns || filterableColumns.length === 0) return null;
 
@@ -122,14 +206,11 @@ export default function DataTable({
       <div className="space-y-4 py-4">
         <div className="flex gap-4">
           {filterableColumns.map((columnKey) => {
-            const column = columns.find((col) => col.key === columnKey);
+            const column = finalColumns.find((col) => col.key === columnKey);
             if (!column) return null;
 
             return (
-              <div key={columnKey} className="flex flex-col space-y-2 flex-1">
-                <label className="text-sm font-medium text-foreground">
-                  Filter {column.header || columnKey}
-                </label>
+              <div key={columnKey} className="flex-1">
                 <Input
                   placeholder={`Filter ${column.header || columnKey}...`}
                   value={columnFilters[columnKey] || ""}
@@ -260,13 +341,13 @@ export default function DataTable({
 
       <div className="overflow-x-auto">
       <Table>
-        <TableHeader columns={columns} />
+        <TableHeader columns={finalColumns} />
         <TableBody>
             {currentData.map((row, index) => (
             <TableRow 
               key={row.id || index} 
               row={row} 
-              columns={columns}
+              columns={finalColumns}
                 index={startIndex + index}
               striped={striped}
               hover={hover}
@@ -369,4 +450,16 @@ function TableRow({ row, columns, index, striped, hover, onClick }) {
  * @property {number} [width] - Optional width for the column
  * @property {boolean} [sortable] - Whether the column is sortable
  * @property {string} [align] - Text alignment: 'left', 'center', 'right'
+ */
+
+/**
+ * Action button configuration type definition (for reference)
+ * 
+ * @typedef {Object} ActionConfig
+ * @property {string} type - Action type: 'view', 'edit', 'delete', 'custom'
+ * @property {React.Component} component - The component to render for this action
+ * @property {Object} [props] - Additional props to pass to the component
+ * @property {Function} [onEdit] - Callback for edit actions
+ * @property {Function} [onDelete] - Callback for delete actions
+ * @property {*} [key] - Unique key for the action (auto-generated if not provided)
  */

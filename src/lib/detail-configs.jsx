@@ -356,3 +356,90 @@ export const orderDetailConfig = {
     }
   ]
 }
+
+// User Detail Configuration
+export const userDetailConfig = {
+  itemType: "User",
+  title: "User Details",
+  description: "View detailed user information",
+  size: "default",
+  sections: [
+    {
+      title: "Personal Information",
+      className: "bg-card p-4 rounded-lg border border-border",
+      titleClassName: "text-primary font-semibold mb-3",
+      fields: [
+        {
+          name: 'username',
+          label: 'Username',
+          type: FIELD_TYPES.TEXT,
+          display: 'value',
+          className: "col-span-1"
+        },
+        {
+          name: 'email',
+          label: 'Email',
+          type: FIELD_TYPES.EMAIL,
+          display: 'value',
+          className: "col-span-1"
+        },
+        {
+          name: 'first_name',
+          label: 'First Name',
+          type: FIELD_TYPES.TEXT,
+          display: 'value',
+          className: "col-span-1"
+        },
+        {
+          name: 'last_name',
+          label: 'Last Name',
+          type: FIELD_TYPES.TEXT,
+          display: 'value',
+          className: "col-span-1"
+        }
+      ],
+      layout: "grid-cols-2"
+    },
+    {
+      title: "Account & Role",
+      className: "bg-card p-4 rounded-lg border border-border",
+      titleClassName: "text-primary font-semibold mb-3",
+      fields: [
+        {
+          name: 'role',
+          label: 'Role',
+          type: FIELD_TYPES.BADGE,
+          display: 'badge',
+          badgeVariant: BADGE_VARIANTS.ROLE,
+          className: "col-span-1",
+          badgeMapping: {
+            'admin': { variant: 'destructive', label: 'Admin' },
+            'moderator': { variant: 'default', label: 'Moderator' },
+            'user': { variant: 'secondary', label: 'User' }
+          }
+        },
+        {
+          name: 'status',
+          label: 'Status',
+          type: FIELD_TYPES.BADGE,
+          display: 'badge',
+          badgeVariant: BADGE_VARIANTS.STATUS,
+          className: "col-span-1",
+          badgeMapping: {
+            'active': { variant: 'default', label: 'Active' },
+            'inactive': { variant: 'secondary', label: 'Inactive' },
+            'pending': { variant: 'outline', label: 'Pending' }
+          }
+        },
+        {
+          name: 'department',
+          label: 'Department',
+          type: FIELD_TYPES.TEXT,
+          display: 'value',
+          className: "col-span-1"
+        }
+      ],
+      layout: "grid-cols-2"
+    }
+  ]
+}

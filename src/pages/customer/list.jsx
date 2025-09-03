@@ -180,26 +180,7 @@ function CustomersPage() {
       ),
       cellClassName: 'text-center'
     },
-    {
-      key: 'actions',
-      header: 'Actions',
-      render: (value, row) => (
-        <div className="flex gap-2">
-          <CustomerDetail 
-            customer={row}
-          />
-          <UpdateCustomer 
-            customer={row}
-            onEdit={handleEditCustomer}
-          />
-          <DeleteCustomer 
-            customer={row}
-            onDelete={handleDeleteCustomer}
-          />
-        </div>
-      ),
-      cellClassName: 'w-32'
-    },
+
   ]
 
   // Handle customer actions
@@ -247,7 +228,23 @@ function CustomersPage() {
     })
   }
 
-
+  // Action buttons configuration
+  const customerActions = [
+    {
+      type: 'view',
+      component: CustomerDetail,
+    },
+    {
+      type: 'edit',
+      component: UpdateCustomer,
+      onEdit: handleEditCustomer,
+    },
+    {
+      type: 'delete',
+      component: DeleteCustomer,
+      onDelete: handleDeleteCustomer,
+    },
+  ]
 
   // Page actions - Add Customer button
   const pageActions = (
@@ -273,6 +270,9 @@ function CustomersPage() {
                 filterableColumns={['name', 'contact', 'company', 'industry']}
                 itemsPerPage={5}
                 showPagination={true}
+                actions={customerActions}
+                actionsColumnHeader="Actions"
+                actionsColumnClassName="w-32"
               />
             </div>
           </div>

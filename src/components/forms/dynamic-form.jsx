@@ -275,6 +275,7 @@ function DynamicForm({
   initialData = null,
   submitLabel = "Submit",
   showActions = true,
+  disabled = false,
 }) {
   const schema = buildZodSchema(config.sections??config);
   const defaultValues = computeDefaultValues(config.sections);
@@ -287,12 +288,17 @@ function DynamicForm({
     mode: "onSubmit",
   });
 
-  const handleSubmit = (values) => {
-    if (onSubmit) {
-      onSubmit(values);
-    } else {
-      console.log("Form submitted:", values);
-      toast.success("Form submitted successfully!");
+  const handleSubmit = async (values) => {
+    try {
+      if (onSubmit) {
+        await onSubmit(values);
+      } else {
+        console.log("Form submitted:", values);
+        toast.success("Form submitted successfully!");
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error(error.message || "Form submission failed");
     }
   };
 
@@ -302,6 +308,7 @@ function DynamicForm({
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
           className={cn("space-y-8", config.formClassName)}
+          noValidate
         >
           {/* Main Form Card Container */}
           <div className="bg-card rounded-lg border border-border p-6">
@@ -475,7 +482,7 @@ function DynamicForm({
                 <Button 
                   type="submit" 
                   className={config.submitButtonClassName}
-                  disabled={form.formState.isSubmitting}
+                  disabled={form.formState.isSubmitting || disabled}
                 >
                   {form.formState.isSubmitting ? "Submitting..." : submitLabel}
                 </Button>

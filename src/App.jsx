@@ -4,7 +4,7 @@ import { AppLayout, PageLayout } from './shared/layout'
 import CustomersPage from './pages/customer/list'
 import LoginPage from './pages/login'
 import ForgotPasswordPage from './pages/forgot-password'
-import { UserList, CreateUser, UpdateUser, UserDetail } from './pages/users'
+import { UserList, UserDetail } from './pages/users'
 import { Toaster } from 'sonner'
 import StatsGrid from './components/stats-grid'
 
@@ -26,24 +26,18 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<DashboardPage />} />
+        {/* Authentication Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        
+        {/* Main Application Routes */}
+        <Route path="/" element={<DashboardPage />} />
         <Route path="/customers" element={<CustomersPage />} />
         
         {/* Users Routes */}
         <Route path="/users" element={
           <AppLayout>
-            <PageLayout title="Users">
-              <UserList />
-            </PageLayout>
-          </AppLayout>
-        } />
-        <Route path="/users/create" element={
-          <AppLayout>
-            <PageLayout title="Create User">
-              <CreateUser />
-            </PageLayout>
+            <UserList />
           </AppLayout>
         } />
         <Route path="/users/:id" element={
@@ -53,14 +47,8 @@ function App() {
             </PageLayout>
           </AppLayout>
         } />
-        <Route path="/users/:id/edit" element={
-          <AppLayout>
-            <PageLayout title="Edit User">
-              <UpdateUser />
-            </PageLayout>
-          </AppLayout>
-        } />
         
+        {/* Catch-all Route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toaster />

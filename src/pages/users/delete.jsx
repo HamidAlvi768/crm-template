@@ -1,19 +1,19 @@
 import React from 'react'
 import { DeleteDialog } from '@/components/dialogs'
 
-function DeleteCustomer({ data: customer, onDelete }) {
+function DeleteUser({ data: user, onDelete }) {
   const handleDelete = () => {
-    onDelete(customer)
+    onDelete(user)
   }
 
   return (
     <DeleteDialog
-      itemType="Customer"
-      itemName={`${customer.firstName} ${customer.lastName}`}
+      itemType="User"
+      itemName={user.username}
       onDelete={handleDelete}
       size="sm"
     />
   )
 }
 
-export default DeleteCustomer
+export default DeleteUser

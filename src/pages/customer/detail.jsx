@@ -2,7 +2,7 @@ import React from 'react'
 import { DynamicDetailDialog } from '@/components/dialogs'
 import { customerDetailConfig } from '@/lib/detail-configs'
 
-function CustomerDetail({ customer, trigger = null }) {
+function CustomerDetail({ data: customer, trigger = null }) {
   if (!customer) return null
 
   return (
