@@ -64,7 +64,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = getAuthToken()
-    if (token) {
+  if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
     return config
@@ -134,7 +134,7 @@ const apiClient = {
     logout: async () => {
       try {
         return await axiosInstance.post(AUTH_ENDPOINTS.LOGOUT)
-      } catch (error) {
+    } catch (error) {
         // Even if logout fails on server, we should clear local state
         console.warn('Logout API call failed:', error)
         return { success: true }
@@ -175,7 +175,7 @@ const apiClient = {
       }
     }
   },
-
+  
   // File upload
   upload: (endpoint, file, onProgress) => {
     const formData = new FormData()

@@ -13,63 +13,90 @@ Our application follows a **layered architecture** with clear separation of conc
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Components    │───▶│   Custom Hooks  │───▶│   Zustand Store │───▶│   API Services  │
-│   (UI Layer)    │    │  (Logic Layer)  │    │ (State Layer)   │    │ (Data Layer)    │
+│   Components    │───▶│   Zustand Store │───▶│   API Services  │───▶│  Unified Client │
+│   (UI Layer)    │    │ (State Layer)   │    │ (Data Layer)    │    │ (HTTP Client)   │
+│ pages/users/    │    │ store/userStore │    │ api/users.js    │    │ api/client.js   │
+│ create.jsx      │    │ store/authStore │    │ api/products.js │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │                       │
          ▼                       ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  Form Configs   │    │   useAuth Hook  │    │  Auth Store     │    │  Unified Client │
-│  (Config Layer) │    │  (Auth Logic)   │    │ (Auth State)    │    │ (HTTP Client)   │
+│  Form Configs   │    │  Auth Interceptor│    │  Axios Instance │    │  Backend API    │
+│  (Config Layer) │    │ (Auth Logic)    │    │ (HTTP Layer)    │    │ (External)      │
+│ lib/form-configs│    │ client.js       │    │ client.js       │    │ External Server │
+│ .jsx            │    │                 │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 ## 🔄 **Complete Data Flow Chain**
 
-### **1. User Action → Component**
-```javascript
-// User clicks "Add User" button in UserList component
-<CreateUser onUserAdded={handleUserAdded} />
+### **1. Component → Zustand Store**
+
+**File**: `src/pages/users/create.jsx`
+
+```jsx
+// User clicks "Add User" button, opens form dialog, submits form data
+const handleSubmit = async (formData) => {
+  const response = await addUser(formData);
+};
 ```
 
-### **2. Component → Custom Hook**
-```javascript
-// Component uses useAuth hook for authentication
-const { isAuthenticated, user, login, logout } = useAuth()
-```
+### **2. Store → API Service**
 
-### **3. Custom Hook → Zustand Store**
-```javascript
-// useAuth hook delegates to authStore
-const { isAuthenticated, user, login, logout } = useAuthStore()
-```
+**File**: `src/store/userStore.js`
 
-### **4. Store → API Service**
-```javascript
+```jsx
 // Store calls API service methods
-const response = await apiClient.auth.login(credentials)
+addUser: async (userData) => {
+	const response = await usersApi.createUser(userData)
+}
 ```
 
-### **5. API Service → Unified Client**
-```javascript
+### **3. API Service → Unified Client**
+
+**File**: `src/services/api/users.js`
+
+```jsx
 // API service uses unified client
-const response = await apiClient.post('/users', userData)
+createUser: async (userData) => {
+	const response = await apiClient.post('/users', userData)
+}
 ```
 
-### **6. Unified Client → Axios Instance**
-```javascript
-// Unified client uses axios instance with interceptors
-const response = await axiosInstance.post(endpoint, data)
+### **4. Unified Client → Axios Instance**
+
+**File**: `src/services/api/client.js` (axiosInstance)
+
+```jsx
+// Unified client methods directly call axios instance
+const apiClient = {
+	post: (endpoint, data = {}) => axiosInstance.post(endpoint, data)
+}
 ```
 
-### **7. Axios → Backend API**
-```javascript
+### **5. Axios Interceptor → Authentication**
+
+**File**: `src/services/api/client.js` (Request Interceptor)
+
+```jsx
+// Authentication happens automatically in request interceptor
+axiosInstance.interceptors.request.use((config) => {
+  const token = getAuthToken()
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`  }
+  return config
+})
+```
+
+### **6. Axios → Backend API**
+
+**File**: External backend server
+
+```jsx
 // Axios makes HTTP request to backend
 POST /api/users
-Authorization: Bearer <token>
-Content-Type: application/json
+Authorization: Bearer <token>Content-Type: application/json
 ```
-
 ## 📁 **File Structure & Responsibilities**
 
 ### **🔧 Core API Files**
